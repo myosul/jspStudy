@@ -13,11 +13,12 @@
         <td>출생년도</td>
         <td>가입일</td>
     </tr>
-    <c:if test="${ list.size() == 0 }">
+    <c:if test="${ list.size() <= 0 }">
     <tr>
         <td colspan="6" align="center" height="100">등록된 회원이 없습니다.</td>
     </tr>
     </c:if>
+    <c:if test="${ list.size() > 0 }">
     <c:forEach var="dto" items="${ list }">
     <tr>
         <td>${ recordNum }</td>
@@ -29,7 +30,6 @@
     </tr>
     <c:set var="recordNum" value="${ recordNum = recordNum - 1 }"></c:set>
     </c:forEach>
-    <c:if test="${ totalRecord > 0 }">
     <tr>
         <td colspan="6" align="center">
             <table>
