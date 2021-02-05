@@ -70,6 +70,33 @@ survey_answer_regi_date timestamp default current_timestamp
 
 create sequence seq_survey_answer start with 1 increment by 1 minvalue 1;
 
+create table board (
+board_no number not null,
+board_num number not null,
+board_tbl varchar2(50) not null,
+board_writer varchar2(50) not null,
+board_subject varchar2(50) not null,
+board_content clob not null,
+board_email varchar2(50) not null,
+board_passwd varchar2(50) not null,
+board_ref_no number not null,
+board_step_no number not null,
+board_level_no number not null,
+board_parent_no number not null,
+board_hit number not null,
+board_ip varchar2(50) not null,
+member_no number not null,
+board_notice_no number not null,
+board_secret varchar2(1) not null check (board_secret in ('T', 'F')),
+board_regi_date timestamp default current_timestamp,
+primary key(board_no)
+);
+
+create sequence seq_board start with 1 increment by 1 minvalue 1;
+
+
+
+
 select survey_no, survey_question, survey_answer1, survey_answer2, survey_answer3, survey_answer4, survey_answer5, survey_status, survey_start_date, survey_end_date, survey_regi_date, (
 select count(*) from survey_answer where survey_no = survey.survey_no) survey_counter 
 from survey 

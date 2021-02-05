@@ -37,26 +37,28 @@ public class Survey1Controller extends HttpServlet {
 	    request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
         
+        Util util = new Util();
+        
         String path = request.getContextPath();
         String url = request.getRequestURI().toString(); // 사용자가 요청한 주소
         String page = "/main/main.jsp"; // 포워딩할 주소
         
         // pageNumber-------
-        int pageNumber = Util.toNumber(request.getParameter("pageNumber"));
+        int pageNumber = util.toNumber(request.getParameter("pageNumber"));
         if (pageNumber <= 0) {
             pageNumber = 1;
         }
         // -----------------
         
         // 검색데이터-------
-        String list_gubun = Util.list_gubunCheck(request.getParameter("list_gubun"));
+        String list_gubun = util.list_gubunCheck(request.getParameter("list_gubun"));
         
         String search_option = request.getParameter("search_option");
         String search_data = request.getParameter("search_data");
         String search_date_s = request.getParameter("search_date_s");
         String search_date_e = request.getParameter("search_date_e");
         String search_date_check = request.getParameter("search_date_check");
-        String[] searchArray = Util.searchCheck(search_option, search_data, search_date_s, search_date_e, search_date_check);
+        String[] searchArray = util.searchCheck(search_option, search_data, search_date_s, search_date_e, search_date_check);
         search_option = searchArray[0];
         search_data = searchArray[1];
         search_date_s = searchArray[2];
@@ -65,7 +67,7 @@ public class Survey1Controller extends HttpServlet {
         // -----------------
         
         // dateMap----------
-        int[] date = Util.getDateTime();
+        int[] date = util.getDateTime();
         Map<String, Integer> dateMap = new HashMap<>();
         dateMap.put("now_y", date[0]);
         dateMap.put("now_m", date[1]);
@@ -147,24 +149,24 @@ public class Survey1Controller extends HttpServlet {
             
         } else if (url.indexOf("addProc.do") != -1) {
             
-            String survey_question = Util.toEntityCode(request.getParameter("survey_question"));
-            String survey_answer1 = Util.toEntityCode(request.getParameter("survey_answer1"));
-            String survey_answer2 = Util.toEntityCode(request.getParameter("survey_answer2"));
-            String survey_answer3 = Util.toEntityCode(request.getParameter("survey_answer3"));
-            String survey_answer4 = Util.toEntityCode(request.getParameter("survey_answer4"));
-            String survey_answer5 = Util.toEntityCode(request.getParameter("survey_answer5"));
-            String survey_status = Util.toEntityCode(request.getParameter("survey_status"));
+            String survey_question = util.toEntityCode(request.getParameter("survey_question"));
+            String survey_answer1 = util.toEntityCode(request.getParameter("survey_answer1"));
+            String survey_answer2 = util.toEntityCode(request.getParameter("survey_answer2"));
+            String survey_answer3 = util.toEntityCode(request.getParameter("survey_answer3"));
+            String survey_answer4 = util.toEntityCode(request.getParameter("survey_answer4"));
+            String survey_answer5 = util.toEntityCode(request.getParameter("survey_answer5"));
+            String survey_status = util.toEntityCode(request.getParameter("survey_status"));
             
-            String survey_start_date_yyyy = Integer.toString(Util.toNumber(request.getParameter("survey_start_date_yyyy")));
-            String survey_start_date_mm = Integer.toString(Util.toNumber(request.getParameter("survey_start_date_mm")));
-            String survey_start_date_dd = Integer.toString(Util.toNumber(request.getParameter("survey_start_date_dd")));
+            String survey_start_date_yyyy = Integer.toString(util.toNumber(request.getParameter("survey_start_date_yyyy")));
+            String survey_start_date_mm = Integer.toString(util.toNumber(request.getParameter("survey_start_date_mm")));
+            String survey_start_date_dd = Integer.toString(util.toNumber(request.getParameter("survey_start_date_dd")));
             String survey_start_date_ = survey_start_date_yyyy + "-" + survey_start_date_mm + "-" + survey_start_date_dd;
             survey_start_date_ += " 00:00:00.0";
             Timestamp survey_start_date = Timestamp.valueOf(survey_start_date_);
             
-            String survey_end_date_yyyy = Integer.toString(Util.toNumber(request.getParameter("survey_end_date_yyyy")));
-            String survey_end_date_mm = Integer.toString(Util.toNumber(request.getParameter("survey_end_date_mm")));
-            String survey_end_date_dd = Integer.toString(Util.toNumber(request.getParameter("survey_end_date_dd")));
+            String survey_end_date_yyyy = Integer.toString(util.toNumber(request.getParameter("survey_end_date_yyyy")));
+            String survey_end_date_mm = Integer.toString(util.toNumber(request.getParameter("survey_end_date_mm")));
+            String survey_end_date_dd = Integer.toString(util.toNumber(request.getParameter("survey_end_date_dd")));
             String survey_end_date_ = survey_end_date_yyyy + "-" + survey_end_date_mm + "-" + survey_end_date_dd;
             survey_end_date_ += " 23:59:59.999999";
             Timestamp survey_end_date = Timestamp.valueOf(survey_end_date_);
@@ -203,7 +205,7 @@ public class Survey1Controller extends HttpServlet {
             
         } else if (url.indexOf("view.do") != -1) {
             
-            int survey_no = Util.toNumber(request.getParameter("survey_no"));
+            int survey_no = util.toNumber(request.getParameter("survey_no"));
             
             SurveyDAO dao = new SurveyDAO();
             SurveyDTO dto = dao.getSelect(survey_no);
@@ -218,8 +220,8 @@ public class Survey1Controller extends HttpServlet {
             
         } else if (url.indexOf("answerProc.do") != -1) {
             
-            int survey_no = Util.toNumber(request.getParameter("survey_no"));
-            int survey_answer = Util.toNumber(request.getParameter("survey_answer"));
+            int survey_no = util.toNumber(request.getParameter("survey_no"));
+            int survey_answer = util.toNumber(request.getParameter("survey_answer"));
             
             SurveyAnswerDTO dto = new SurveyAnswerDTO();
             dto.setSurvey_no(survey_no);
@@ -248,7 +250,7 @@ public class Survey1Controller extends HttpServlet {
             
         } else if (url.indexOf("modify.do") != -1) {
             
-            int survey_no = Util.toNumber(request.getParameter("survey_no"));
+            int survey_no = util.toNumber(request.getParameter("survey_no"));
             
             SurveyDAO dao = new SurveyDAO();
             SurveyDTO dto = dao.getSelect(survey_no);
@@ -302,26 +304,26 @@ public class Survey1Controller extends HttpServlet {
             
         } else if (url.indexOf("modifyProc.do") != -1) {
             
-            int survey_no = Util.toNumber(request.getParameter("survey_no"));
+            int survey_no = util.toNumber(request.getParameter("survey_no"));
             
-            String survey_question = Util.toEntityCode(request.getParameter("survey_question"));
-            String survey_answer1 = Util.toEntityCode(request.getParameter("survey_answer1"));
-            String survey_answer2 = Util.toEntityCode(request.getParameter("survey_answer2"));
-            String survey_answer3 = Util.toEntityCode(request.getParameter("survey_answer3"));
-            String survey_answer4 = Util.toEntityCode(request.getParameter("survey_answer4"));
-            String survey_answer5 = Util.toEntityCode(request.getParameter("survey_answer5"));
-            String survey_status = Util.toEntityCode(request.getParameter("survey_status"));
+            String survey_question = util.toEntityCode(request.getParameter("survey_question"));
+            String survey_answer1 = util.toEntityCode(request.getParameter("survey_answer1"));
+            String survey_answer2 = util.toEntityCode(request.getParameter("survey_answer2"));
+            String survey_answer3 = util.toEntityCode(request.getParameter("survey_answer3"));
+            String survey_answer4 = util.toEntityCode(request.getParameter("survey_answer4"));
+            String survey_answer5 = util.toEntityCode(request.getParameter("survey_answer5"));
+            String survey_status = util.toEntityCode(request.getParameter("survey_status"));
             
-            String survey_start_date_yyyy = Integer.toString(Util.toNumber(request.getParameter("survey_start_date_yyyy")));
-            String survey_start_date_mm = Integer.toString(Util.toNumber(request.getParameter("survey_start_date_mm")));
-            String survey_start_date_dd = Integer.toString(Util.toNumber(request.getParameter("survey_start_date_dd")));
+            String survey_start_date_yyyy = Integer.toString(util.toNumber(request.getParameter("survey_start_date_yyyy")));
+            String survey_start_date_mm = Integer.toString(util.toNumber(request.getParameter("survey_start_date_mm")));
+            String survey_start_date_dd = Integer.toString(util.toNumber(request.getParameter("survey_start_date_dd")));
             String survey_start_date_ = survey_start_date_yyyy + "-" + survey_start_date_mm + "-" + survey_start_date_dd;
             survey_start_date_ += " 00:00:00.0";
             Timestamp survey_start_date = Timestamp.valueOf(survey_start_date_);
             
-            String survey_end_date_yyyy = Integer.toString(Util.toNumber(request.getParameter("survey_end_date_yyyy")));
-            String survey_end_date_mm = Integer.toString(Util.toNumber(request.getParameter("survey_end_date_mm")));
-            String survey_end_date_dd = Integer.toString(Util.toNumber(request.getParameter("survey_end_date_dd")));
+            String survey_end_date_yyyy = Integer.toString(util.toNumber(request.getParameter("survey_end_date_yyyy")));
+            String survey_end_date_mm = Integer.toString(util.toNumber(request.getParameter("survey_end_date_mm")));
+            String survey_end_date_dd = Integer.toString(util.toNumber(request.getParameter("survey_end_date_dd")));
             String survey_end_date_ = survey_end_date_yyyy + "-" + survey_end_date_mm + "-" + survey_end_date_dd;
             survey_end_date_ += " 23:59:59.999999";
             Timestamp survey_end_date = Timestamp.valueOf(survey_end_date_);
@@ -361,12 +363,12 @@ public class Survey1Controller extends HttpServlet {
             
         } else if (url.indexOf("answerSetProc") != -1) {
             
-            int k = Util.toNumber(request.getParameter("k"));
+            int k = util.toNumber(request.getParameter("k"));
             
             int errorCount = 0;
             for (int i=0; i<k; i++ ) {
-                int tempNo = Util.toNumber(request.getParameter(i + "_survey_no"));
-                int tempAnswer = Util.toNumber(request.getParameter(i + "_survey_answer"));
+                int tempNo = util.toNumber(request.getParameter(i + "_survey_no"));
+                int tempAnswer = util.toNumber(request.getParameter(i + "_survey_answer"));
                 
                 // System.out.println("tempNo : " + tempNo + " | tempAnswer : " + tempAnswer);
                 

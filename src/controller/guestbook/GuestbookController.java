@@ -33,13 +33,15 @@ public class GuestbookController extends HttpServlet {
 	    request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
         
+        Util util = new Util();
+        
         String path = request.getContextPath();
         String url = request.getRequestURI().toString(); // 사용자가 요청한 주소
         
         String page = "/main/main.jsp"; // 포워딩할 주소
         
         // pageNumber-------
-        int pageNumber = Util.toNumber(request.getParameter("pageNumber"));
+        int pageNumber = util.toNumber(request.getParameter("pageNumber"));
         if (pageNumber <= 0) {
             pageNumber = 1;
         }
@@ -54,10 +56,10 @@ public class GuestbookController extends HttpServlet {
             
         } else if (url.indexOf("writeProc.do") != -1) {
             
-            String guestbook_writer_name = Util.toEntityCode(request.getParameter("guestbook_writer_name"));
-            String guestbook_writer_email = Util.toEntityCode(request.getParameter("guestbook_writer_email"));
-            String guestbook_passwd = Util.toNumberAndAlphabet(request.getParameter("guestbook_passwd"));
-            String guestbook_content = Util.toEntityCode(request.getParameter("guestbook_content"));
+            String guestbook_writer_name = util.toEntityCode(request.getParameter("guestbook_writer_name"));
+            String guestbook_writer_email = util.toEntityCode(request.getParameter("guestbook_writer_email"));
+            String guestbook_passwd = util.toNumberAndAlphabet(request.getParameter("guestbook_passwd"));
+            String guestbook_content = util.toEntityCode(request.getParameter("guestbook_content"));
             
             GuestbookDTO dto = new GuestbookDTO();
             dto.setGuestbook_writer_name(guestbook_writer_name);

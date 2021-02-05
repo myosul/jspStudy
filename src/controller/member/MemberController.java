@@ -33,12 +33,14 @@ public class MemberController extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
         
+        Util util = new Util();
+        
         String path = request.getContextPath();
         String url = request.getRequestURI().toString(); // 사용자가 요청한 주소
         String page = "/main/main.jsp"; // 포워딩할 주소
         
         // pageNumber-------
-        int pageNumber = Util.toNumber(request.getParameter("pageNumber"));
+        int pageNumber = util.toNumber(request.getParameter("pageNumber"));
         if (pageNumber <= 0) {
             pageNumber = 1;
         }
@@ -56,9 +58,9 @@ public class MemberController extends HttpServlet {
         } else if (url.indexOf("joinProc.do") != -1) {
             
             String member_id = request.getParameter("member_id");
-            if (Util.numberAndAlphabetCheck(member_id)) {
-                member_id = Util.toNumberAndAlphabet(member_id);
-                member_id = Util.toEntityCode(member_id);
+            if (util.numberAndAlphabetCheck(member_id)) {
+                member_id = util.toNumberAndAlphabet(member_id);
+                member_id = util.toEntityCode(member_id);
             } else {
                 response.setContentType("text/html; charset=utf-8");
                 PrintWriter out = response.getWriter();
@@ -70,9 +72,9 @@ public class MemberController extends HttpServlet {
             }
             
             String member_password = request.getParameter("member_password");
-            if (Util.passwordCheck(member_password)) {
-                member_password = Util.toPassword(member_password);
-                member_password = Util.toEntityCode(member_password);
+            if (util.passwordCheck(member_password)) {
+                member_password = util.toPassword(member_password);
+                member_password = util.toEntityCode(member_password);
             } else {
                 response.setContentType("text/html; charset=utf-8");
                 PrintWriter out = response.getWriter();
@@ -84,9 +86,9 @@ public class MemberController extends HttpServlet {
             }
             
             String member_password_check = request.getParameter("member_password_check");
-            if (Util.passwordCheck(member_password_check)) {
-                member_password_check = Util.toPassword(member_password_check);
-                member_password_check = Util.toEntityCode(member_password_check);
+            if (util.passwordCheck(member_password_check)) {
+                member_password_check = util.toPassword(member_password_check);
+                member_password_check = util.toEntityCode(member_password_check);
             } else {
                 response.setContentType("text/html; charset=utf-8");
                 PrintWriter out = response.getWriter();
@@ -97,19 +99,19 @@ public class MemberController extends HttpServlet {
                 return;
             }
             
-            String member_name = Util.toEntityCode(request.getParameter("member_name"));
+            String member_name = util.toEntityCode(request.getParameter("member_name"));
             
-            String member_gender = Util.toEntityCode(request.getParameter("member_gender"));
+            String member_gender = util.toEntityCode(request.getParameter("member_gender"));
             
-            int member_born_year = Util.toNumber(request.getParameter("member_born_year"));
+            int member_born_year = util.toNumber(request.getParameter("member_born_year"));
             
-            int member_postcode = Util.toNumber(request.getParameter("member_postcode"));
+            int member_postcode = util.toNumber(request.getParameter("member_postcode"));
             
-            String member_address = Util.toEntityCode(request.getParameter("member_address"));
+            String member_address = util.toEntityCode(request.getParameter("member_address"));
             
-            String member_detail_address = Util.toEntityCode(request.getParameter("member_detail_address"));
+            String member_detail_address = util.toEntityCode(request.getParameter("member_detail_address"));
             
-            String member_extra_address = Util.toEntityCode(request.getParameter("member_extra_address"));
+            String member_extra_address = util.toEntityCode(request.getParameter("member_extra_address"));
             
             MemberDTO dto = new MemberDTO();
             dto.setMember_id(member_id);
@@ -163,11 +165,11 @@ public class MemberController extends HttpServlet {
             
         } else if (url.indexOf("loginProc.do") != -1) {
             
-            String member_id = Util.toNumberAndAlphabet(request.getParameter("member_id"));
-            member_id = Util.toEntityCode(member_id);
+            String member_id = util.toNumberAndAlphabet(request.getParameter("member_id"));
+            member_id = util.toEntityCode(member_id);
             
-            String member_password_check = Util.toPassword(request.getParameter("member_password_check"));
-            member_password_check = Util.toEntityCode(member_password_check);
+            String member_password_check = util.toPassword(request.getParameter("member_password_check"));
+            member_password_check = util.toEntityCode(member_password_check);
             
             MemberDTO dto = new MemberDTO();
             dto.setMember_id(member_id);
@@ -273,7 +275,7 @@ public class MemberController extends HttpServlet {
             
         } else if (url.indexOf("view.do") != -1) {
             
-            int member_no = Util.toNumber(request.getParameter("member_no"));
+            int member_no = util.toNumber(request.getParameter("member_no"));
             
             MemberDAO dao = new MemberDAO();
             MemberDTO dto = dao.getSelect(member_no);
@@ -286,7 +288,7 @@ public class MemberController extends HttpServlet {
             
         } else if (url.indexOf("modify.do") != -1) {
             
-            int member_no = Util.toNumber(request.getParameter("member_no"));
+            int member_no = util.toNumber(request.getParameter("member_no"));
             
             // 세션 체크--------------------
             HttpSession session = request.getSession();
@@ -317,7 +319,7 @@ public class MemberController extends HttpServlet {
             
         } else if (url.indexOf("delete.do") != -1) {
             
-            int member_no = Util.toNumber(request.getParameter("member_no"));
+            int member_no = util.toNumber(request.getParameter("member_no"));
             
             // 세션 체크--------------------
             HttpSession session = request.getSession();
@@ -348,7 +350,7 @@ public class MemberController extends HttpServlet {
             
         } else if (url.indexOf("modifyProc.do") != -1) {
             
-            int member_no = Util.toNumber(request.getParameter("member_no"));
+            int member_no = util.toNumber(request.getParameter("member_no"));
             
             // 세션 체크--------------------
             HttpSession session = request.getSession();
@@ -368,25 +370,25 @@ public class MemberController extends HttpServlet {
             }
             // -----------------------------
             
-            String member_id = Util.toNumberAndAlphabet(request.getParameter("member_id"));
-            member_id = Util.toEntityCode(member_id);
+            String member_id = util.toNumberAndAlphabet(request.getParameter("member_id"));
+            member_id = util.toEntityCode(member_id);
             
-            String member_password_check = Util.toPassword(request.getParameter("member_password_check"));
-            member_password_check = Util.toEntityCode(member_password_check);
+            String member_password_check = util.toPassword(request.getParameter("member_password_check"));
+            member_password_check = util.toEntityCode(member_password_check);
             
-            String member_name = Util.toEntityCode(request.getParameter("member_name"));
+            String member_name = util.toEntityCode(request.getParameter("member_name"));
             
-            String member_gender = Util.toEntityCode(request.getParameter("member_gender"));
+            String member_gender = util.toEntityCode(request.getParameter("member_gender"));
             
-            int member_born_year = Util.toNumber(request.getParameter("member_born_year"));
+            int member_born_year = util.toNumber(request.getParameter("member_born_year"));
             
-            int member_postcode = Util.toNumber(request.getParameter("member_postcode"));
+            int member_postcode = util.toNumber(request.getParameter("member_postcode"));
             
-            String member_address = Util.toEntityCode(request.getParameter("member_address"));
+            String member_address = util.toEntityCode(request.getParameter("member_address"));
             
-            String member_detail_address = Util.toEntityCode(request.getParameter("member_detail_address"));
+            String member_detail_address = util.toEntityCode(request.getParameter("member_detail_address"));
             
-            String member_extra_address = Util.toEntityCode(request.getParameter("member_extra_address"));
+            String member_extra_address = util.toEntityCode(request.getParameter("member_extra_address"));
             
             MemberDTO dto = new MemberDTO();
             dto.setMember_no(member_no);
@@ -427,7 +429,7 @@ public class MemberController extends HttpServlet {
             
         } else if (url.indexOf("deleteProc.do") != -1) {
             
-            int member_no = Util.toNumber(request.getParameter("member_no"));
+            int member_no = util.toNumber(request.getParameter("member_no"));
             
             // 세션 체크--------------------
             HttpSession session = request.getSession();
@@ -447,8 +449,8 @@ public class MemberController extends HttpServlet {
             }
             // -----------------------------
             
-            String member_password_check = Util.toNumberAndAlphabet(request.getParameter("member_password_check"));
-            member_password_check = Util.toEntityCode(member_password_check);
+            String member_password_check = util.toNumberAndAlphabet(request.getParameter("member_password_check"));
+            member_password_check = util.toEntityCode(member_password_check);
             
             MemberDTO dto = new MemberDTO();
             dto.setMember_no(member_no);
@@ -489,9 +491,9 @@ public class MemberController extends HttpServlet {
             
             int result = 1;
             
-            if (Util.numberAndAlphabetCheck(member_id)) {
-                member_id = Util.toNumberAndAlphabet(member_id);
-                member_id = Util.toEntityCode(member_id);
+            if (util.numberAndAlphabetCheck(member_id)) {
+                member_id = util.toNumberAndAlphabet(member_id);
+                member_id = util.toEntityCode(member_id);
                 result = dao.getIdCheck(member_id);
             }
             
@@ -511,9 +513,9 @@ public class MemberController extends HttpServlet {
             
             int result = 1;
             
-            if (Util.numberAndAlphabetCheck(member_id)) {
-                member_id = Util.toNumberAndAlphabet(member_id);
-                member_id = Util.toEntityCode(member_id);
+            if (util.numberAndAlphabetCheck(member_id)) {
+                member_id = util.toNumberAndAlphabet(member_id);
+                member_id = util.toEntityCode(member_id);
                 result = dao.getIdCheck(member_id);
             }
             

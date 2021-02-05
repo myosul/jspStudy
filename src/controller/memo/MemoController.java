@@ -33,13 +33,15 @@ public class MemoController extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
         
+        Util util = new Util();
+        
         String path = request.getContextPath();
         String url = request.getRequestURI().toString(); // 사용자가 요청한 주소
         
         String page = "/main/main.jsp"; // 포워딩할 주소
         
         // pageNumber-------
-        int pageNumber = Util.toNumber(request.getParameter("pageNumber"));
+        int pageNumber = util.toNumber(request.getParameter("pageNumber"));
         if (pageNumber <= 0) {
             pageNumber = 1;
         }
@@ -92,8 +94,8 @@ public class MemoController extends HttpServlet {
             // ------------------------------
             
             int memo_writer_no = cookNo;
-            String memo_subject = Util.toEntityCode(request.getParameter("memo_subject"));
-            String memo_content = Util.toEntityCode(request.getParameter("memo_content"));
+            String memo_subject = util.toEntityCode(request.getParameter("memo_subject"));
+            String memo_content = util.toEntityCode(request.getParameter("memo_content"));
             
             MemoDTO dto = new MemoDTO();
             dto.setMemo_writer_no(memo_writer_no);

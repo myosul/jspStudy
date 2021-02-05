@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!-- 자주 쓰이는 자바스크립트 -->
+<%-- 자주 쓰이는 자바스크립트 --%>
 <script>
 function GoPage(value1, value2, value3) {
     if (value1 == 'member_join') {
