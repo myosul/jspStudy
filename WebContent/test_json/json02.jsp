@@ -6,12 +6,14 @@
 <%@ page import="org.json.simple.JSONObject"%>
 
 <%
+Util util = new Util();
+
 String name = request.getParameter("name");
-int kor = Util.toNumber(request.getParameter("kor"));
-int eng = Util.toNumber(request.getParameter("eng"));
-int mat = Util.toNumber(request.getParameter("mat"));
-int sci = Util.toNumber(request.getParameter("sci"));
-int his = Util.toNumber(request.getParameter("his"));
+int kor = util.toNumber(request.getParameter("kor"));
+int eng = util.toNumber(request.getParameter("eng"));
+int mat = util.toNumber(request.getParameter("mat"));
+int sci = util.toNumber(request.getParameter("sci"));
+int his = util.toNumber(request.getParameter("his"));
 
 int tot = kor + eng + mat + sci + his;
 double avg = tot / 5.0;
