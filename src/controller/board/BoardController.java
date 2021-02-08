@@ -139,7 +139,7 @@ public class BoardController extends HttpServlet {
             }
             
             int board_num = dao.getMaxNum() + 1;
-            int board_ref_no = dao.getMaxRefNo() + 1; // 글 그룹을 의미 = 쿼리를 실행시켜서 가장 큰 ref 값을 가져온 후 +1을 해준다.
+            int board_ref_no = dao.getMaxRefNo() + 1;
             int board_step_no = 1;
             int board_level_no = 1;
             int board_parent_no = 0;
@@ -154,16 +154,13 @@ public class BoardController extends HttpServlet {
             dto.setBoard_content(board_content);
             dto.setBoard_email(board_email);
             dto.setBoard_passwd(board_passwd);
-            
             dto.setBoard_ref_no(board_ref_no);
             dto.setBoard_step_no(board_step_no);
             dto.setBoard_level_no(board_level_no);
             dto.setBoard_parent_no(board_parent_no);
             dto.setBoard_hit(board_hit);
-            
             dto.setBoard_ip(ip);
             dto.setMember_no(cookNo);
-            
             dto.setBoard_notice_no(board_notice_no);
             dto.setBoard_secret(board_secret);
             

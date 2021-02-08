@@ -38,7 +38,7 @@ public class BoardDAO {
         int result = 0;
         conn = getConn();
         try {
-            String sql = "select nvl(max(board_num), 0) from" + tableName01;
+            String sql = "select nvl(max(board_num), 0) from " + tableName01;
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -56,7 +56,7 @@ public class BoardDAO {
         int result = 0;
         conn = getConn();
         try {
-            String sql = "select nvl(max(board_ref_no), 0) from" + tableName01;
+            String sql = "select nvl(max(board_ref_no), 0) from " + tableName01;
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -74,7 +74,7 @@ public class BoardDAO {
         int result = 0;
         conn = getConn();
         try {
-            String sql = "select nvl(max(board_notice_no), 0) from" + tableName01 + "where board_tbl = ?";
+            String sql = "select nvl(max(board_notice_no), 0) from " + tableName01 + " where board_tbl = ?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, board_tbl);
             rs = pstmt.executeQuery();

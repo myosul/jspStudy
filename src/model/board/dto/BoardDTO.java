@@ -183,5 +183,17 @@ public class BoardDTO {
         this.board_nxt_subject = board_nxt_subject;
     }
     
-
+    @Override
+    public String toString() {
+        return "BoardDTO [board_no=" + board_no + ", board_num=" + board_num + ", board_tbl=" + board_tbl
+                + ", board_writer=" + board_writer + ", board_subject=" + board_subject + ", board_content="
+                + board_content + ", board_email=" + board_email + ", board_passwd=" + board_passwd + ", board_ref_no="
+                + board_ref_no + ", board_step_no=" + board_step_no + ", board_level_no=" + board_level_no
+                + ", board_parent_no=" + board_parent_no + ", board_hit=" + board_hit + ", board_ip=" + board_ip
+                + ", member_no=" + member_no + ", board_notice_no=" + board_notice_no + ", board_secret=" + board_secret
+                + ", board_regi_date=" + board_regi_date + ", board_notice=" + board_notice + ", board_child_counter="
+                + board_child_counter + ", board_pre_no=" + board_pre_no + ", board_pre_subject=" + board_pre_subject
+                + ", board_nxt_no=" + board_nxt_no + ", board_nxt_subject=" + board_nxt_subject + "]";
+    }
+    
 }
