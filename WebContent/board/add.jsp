@@ -44,18 +44,24 @@
     </tr>
     <tr>
         <td colspan="2" height="50px;">
+            <button type="button" id="btnList">목록으로</button>
             <button type="button" id="btnAdd">등록하기</button>
-            <button type="button" id="btList">목록으로</button>
         </td>
     </tr>
 </table>
 
 <script>
 $(document).ready(function() {
+    $("#board_writer").focus();
+    
     $("#btnAdd").click(function() {
         if (confirm('등록하시겠습니까?')) {
-            GoBoardPage('addProc');
+            GoBoardPage('addProc', '');
         }
+    });
+    
+    $("#btnList").click(function() {
+        GoBoardPage('list', '');
     });
 });
 

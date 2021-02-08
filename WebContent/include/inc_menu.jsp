@@ -34,13 +34,13 @@
             <a href="${ path }/guestbook_servlet/list.do">방명록</a>
         </td>
         <td id="survey" style="padding: 0px 20px;">
-            <a href="${ path }/survey_servlet/index.do">설문조사</a>
+            <a href="${ path }/survey_servlet/index.do">설문조사(ajax)</a>
         </td>
         <td id="survey" style="padding: 0px 20px;">
-            <a href="${ path }/survey1_servlet/list.do">설문조사(1)</a>
+            <a href="${ path }/survey1_servlet/list.do">설문조사</a>
         </td>
         <td id="board" style="padding: 0px 20px;">
-            <a href="${ path }/board_servlet/index.do">게시판</a>
+            <a href="${ path }/board_servlet/index.do">게시판(ajax)</a>
         </td>
         <td style="padding: 0px 20px;">
             <a href="#">쇼핑몰</a>
