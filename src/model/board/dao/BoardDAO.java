@@ -74,7 +74,7 @@ public class BoardDAO {
         int result = 0;
         conn = getConn();
         try {
-            String sql = "select nvl(max(board_notic_no), 0) from" + tableName01 + "where board_tbl = ?";
+            String sql = "select nvl(max(board_notice_no), 0) from" + tableName01 + "where board_tbl = ?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, board_tbl);
             rs = pstmt.executeQuery();
@@ -93,7 +93,7 @@ public class BoardDAO {
         int result = 0;
         conn = getConn();
         try {
-            String sql = "insert into board";
+            String sql = "insert into " + tableName01;
             sql += " (board_no, board_num, board_tbl, board_writer, board_subject, board_content, board_email, board_passwd, board_ref_no, board_step_no, board_level_no, board_parent_no, board_hit, board_ip, member_no, board_notice_no, board_secret, board_regi_date)";
             sql += " values";
             sql += " (seq_board.nextval, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp)";
@@ -127,7 +127,7 @@ public class BoardDAO {
         int result = 0;
         getConn();
         try {
-            String sql = "select count(*) count from board where board_no > 0";
+            String sql = "select count(*) count from " + tableName01 + " where board_no > 0";
             
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
@@ -147,7 +147,7 @@ public class BoardDAO {
         getConn();
         try {
             String basicSql = "";
-            basicSql += "select board_no, board_num, board_tbl, board_writer, board_subject, board_content, board_email, board_passwd, board_ref_no, board_step_no, board_level_no, board_parent_no, board_hit, board_ip, member_no, board_notice_no, board_secret, board_regi_date from board";
+            basicSql += "select board_no, board_num, board_tbl, board_writer, board_subject, board_content, board_email, board_passwd, board_ref_no, board_step_no, board_level_no, board_parent_no, board_hit, board_ip, member_no, board_notice_no, board_secret, board_regi_date from " + tableName01;
             basicSql += " where board_no > 0";
             basicSql += " order by board_no desc";
             String sql = "";

@@ -18,8 +18,8 @@ search_date : <span id="span_search_date">${ search_date }</span><br>
 <script>
 $(document).ready(function() {
     <c:if test="${ menu_gubun == 'board_index'}">
-    // GoBoardPage('list');
-    GoBoardPage('add');
+    GoBoardPage('list', '');
+    // GoBoardPage('add', '');
     </c:if>
 });
 
@@ -54,8 +54,7 @@ function GoBoardPage(value1, value2) {
         url: url,
         success: function(data) { // 콜백함수(서버에서 처리가 오나료된 후 실행되는 코드)
             if (value1 == "addProc") {
-                alert('aaa');
-                // select_page('1');
+                select_page('1');
             } else {
                 $("#result").html(data);
             }

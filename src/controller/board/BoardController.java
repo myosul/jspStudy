@@ -124,11 +124,11 @@ public class BoardController extends HttpServlet {
             String board_content = request.getParameter("board_content");
             String board_notice = request.getParameter("board_notice");
             
-            int notice_no;
+            int board_notice_no;
             if (board_notice == null || board_notice.trim().equals("") || !board_notice.equals("T")) {
-                notice_no = 0;
+                board_notice_no = 0;
             } else {
-                notice_no = dao.getMaxNoticeNo(board_tbl) + 1;
+                board_notice_no = dao.getMaxNoticeNo(board_tbl) + 1;
             }
             
             String board_secret = request.getParameter("board_secret");
@@ -164,7 +164,7 @@ public class BoardController extends HttpServlet {
             dto.setBoard_ip(ip);
             dto.setMember_no(cookNo);
             
-            dto.setBoard_notice_no(notice_no);
+            dto.setBoard_notice_no(board_notice_no);
             dto.setBoard_secret(board_secret);
             
             int result = dao.setInsert(dto);
