@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import db.DbExample;
 import model.board.dto.BoardDTO;
@@ -120,6 +121,72 @@ public class BoardDAO {
             getConnClose(rs, pstmt, conn);
         }
         return result;
+    }
+    
+    public int getTotalRecord() {
+        int result = 0;
+        getConn();
+        try {
+            String sql = "select count(*) count from board where board_no > 0";
+            
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                result = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            getConnClose(rs, pstmt, conn);
+        }
+        return result;
+    }
+    
+    public ArrayList<BoardDTO> getSelectAll(int startRecord, int endRecord) {
+        ArrayList<BoardDTO> list = new ArrayList<>();
+        getConn();
+        try {
+            String basicSql = "";
+            basicSql += "select board_no, board_num, board_tbl, board_writer, board_subject, board_content, board_email, board_passwd, board_ref_no, board_step_no, board_level_no, board_parent_no, board_hit, board_ip, member_no, board_notice_no, board_secret, board_regi_date from board";
+            basicSql += " where board_no > 0";
+            basicSql += " order by board_no desc";
+            String sql = "";
+            sql += "select * from (select A.*, Rownum Rnum from (";
+            sql += basicSql;
+            sql += ") A) where Rnum >= ? and Rnum <= ?";
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, startRecord);
+            pstmt.setInt(2, endRecord);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                BoardDTO dto = new BoardDTO();
+                dto.setBoard_no(rs.getInt("board_no"));
+                dto.setBoard_num(rs.getInt("board_num"));
+                dto.setBoard_tbl(rs.getString("board_tbl"));
+                dto.setBoard_writer(rs.getString("board_writer"));
+                dto.setBoard_subject(rs.getString("board_subject"));
+                dto.setBoard_content(rs.getString("board_content"));
+                dto.setBoard_email(rs.getString("board_email"));
+                dto.setBoard_passwd(rs.getString("board_passwd"));
+                dto.setBoard_ref_no(rs.getInt("board_ref_no"));
+                dto.setBoard_step_no(rs.getInt("board_step_no"));
+                dto.setBoard_level_no(rs.getInt("board_level_no"));
+                dto.setBoard_parent_no(rs.getInt("board_parent_no"));
+                dto.setBoard_hit(rs.getInt("board_hit"));
+                dto.setBoard_ip(rs.getString("board_ip"));
+                dto.setMember_no(rs.getInt("member_no"));
+                dto.setBoard_notice_no(rs.getInt("board_notice_no"));
+                dto.setBoard_secret(rs.getString("board_secret"));
+                dto.setBoard_regi_date(rs.getTimestamp("board_regi_date"));
+                list.add(dto);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            getConnClose(rs, pstmt, conn);
+        }
+        return list;
     }
 
 }

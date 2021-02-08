@@ -2,8 +2,8 @@
     pageEncoding="UTF-8"%>
 <%@ include file="../include/inc_header.jsp" %>
 <!-- hidden 영역 시작 -->
-<input type="text" name="a" style="display: none;"><br>
-<div style="display: none;">
+<input type="text" name="a" style="display: ;"><br>
+<div style="display: ;">
     list_gubun : <span id="span_list_gubun">${ list_gubun }</span><br>
     pageNumber : <span id="span_pageNumber">${ pageNumber }</span><br>
     survey_no : <span id="survey_no">${ survey_no }</span><br>

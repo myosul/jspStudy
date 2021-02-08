@@ -1,6 +1,7 @@
 package controller.board;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +48,8 @@ public class BoardController extends HttpServlet {
         request.setAttribute("dateMap", dateMap);
         // -----------------
         
-        String serverInfo[] = util.getServerInfo(request); // request.getContectPath();
+        // serverInfo-------
+        String[] serverInfo = util.getServerInfo(request); // request.getContectPath();
         String refer = serverInfo[0];
         String path = serverInfo[1];
         String url = serverInfo[2];
@@ -55,17 +57,24 @@ public class BoardController extends HttpServlet {
         String ip = serverInfo[4];
         // String ip6 = serverInfo[5];
         
-        temp = request.getParameter("tbl");
-        String board_tbl = util.tblCheck(temp, "freeboard");
+        request.setAttribute("ip", ip);
+        // -----------------
+        
+        // board_tbl
+        String board_tbl = util.tblCheck(request.getParameter("tbl"), "freeboard");
+        request.setAttribute("board_tbl", board_tbl);
         
         // board_no
         int board_no = util.toNumber(request.getParameter("board_no"));
+        request.setAttribute("board_no", board_no);
         
         // pageNumber-------
         int pageNumber = util.toNumber(request.getParameter("pageNumber"));
         if (pageNumber <= 0) {
             pageNumber = 1;
         }
+        
+        request.setAttribute("pageNumber", pageNumber);
         // -----------------
         
         // 검색데이터-------
@@ -74,20 +83,15 @@ public class BoardController extends HttpServlet {
         String[] searchArray = util.searchCheck(search_option, search_data);
         search_option = searchArray[0];
         search_data = searchArray[1];
+        
+        request.setAttribute("search_option", search_option);
+        request.setAttribute("search_data", search_data);
         // -----------------
         
         String[] sessionArray = util.sessionCheck(request);
         int cookNo = Integer.parseInt(sessionArray[0]);
         String cookId = sessionArray[1];
         String cookName = sessionArray[2];
-        
-        request.setAttribute("dateMap", dateMap);
-        request.setAttribute("ip", ip);
-        request.setAttribute("board_tbl", board_tbl);
-        request.setAttribute("pageNumber", pageNumber);
-        request.setAttribute("board_no", board_no);
-        request.setAttribute("search_option", search_option);
-        request.setAttribute("search_data", search_data);
         
         BoardDAO dao = new BoardDAO();
         BoardDTO dto = new BoardDTO();
@@ -172,6 +176,56 @@ public class BoardController extends HttpServlet {
                 System.out.println("-- 글 등록 실패 --");
                 return;
             }
+            
+        } else if (url.indexOf("list.do") != -1) {
+            
+            // 페이징 -----------------------
+            int pageSize = 5; // 한페이지 당 보여질 행 개수
+            int blockSize = 5; // 한 블록 당 보여질 페이지 개수
+            int totalRecord = dao.getTotalRecord(); // 총 행 개수
+            int recordNum = totalRecord - pageSize * (pageNumber - 1); // 화면상에 보여질 일련번호 (행 개수 기준)
+            int startRecord = pageSize * (pageNumber -1) + 1; // 시작 행
+            int lastRecord = pageSize * pageNumber; // 마지막 행
+            
+            int totalPage = 0; // 총 페이지
+            int startPage = 1; // 시작 페이지
+            int lastPage = 1; // 마지막 페이지
+            if (totalRecord > 0) {
+                totalPage = totalRecord / pageSize + (totalRecord % pageSize == 0 ? 0 : 1);
+                startPage = (pageNumber / blockSize - (pageNumber % blockSize != 0 ? 0 : 1)) * blockSize + 1;
+                lastPage = startPage + blockSize - 1;
+                if (lastPage > totalPage) {
+                    lastPage = totalPage;
+                }
+            }
+            request.setAttribute("pageSize", pageSize);
+            request.setAttribute("blockSize", blockSize);
+            request.setAttribute("totalRecord", totalRecord);
+            request.setAttribute("recordNum", recordNum);
+            request.setAttribute("startRecord", startRecord);
+            request.setAttribute("lastRecord", lastRecord);
+            request.setAttribute("totalPage", totalPage);
+            request.setAttribute("startPage", startPage);
+            request.setAttribute("lastPage", lastPage);
+            // ------------------------------
+            
+            // 게시글 리스트 ----------------
+            ArrayList<BoardDTO> list = dao.getSelectAll(startRecord, lastRecord);
+            
+            request.setAttribute("list", list);
+            // ------------------------------
+            
+            // pageNumber
+            request.setAttribute("pageNumber", pageNumber);
+            
+            // 검색데이터--------------------
+            request.setAttribute("search_option", search_option);
+            request.setAttribute("search_data", search_data);
+            // ------------------------------
+            
+            temp = "/board/list.jsp";
+            RequestDispatcher rd = request.getRequestDispatcher(temp);
+            rd.forward(request, response);
             
         }
 	    
