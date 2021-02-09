@@ -95,13 +95,4 @@ primary key(board_no)
 create sequence seq_board start with 1 increment by 1 minvalue 1;
 
 
-
-
-select survey_no, survey_question, survey_answer1, survey_answer2, survey_answer3, survey_answer4, survey_answer5, survey_status, survey_start_date, survey_end_date, survey_regi_date, (
-select count(*) from survey_answer where survey_no = survey.survey_no) survey_counter 
-from survey 
-where survey_no > 0 order by survey_no desc;
-
-
-select * from survey_answer;
-
+SELECT * FROM board;
