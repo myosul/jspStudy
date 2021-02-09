@@ -123,13 +123,36 @@ public class BoardDAO {
         return result;
     }
     
-    public int getTotalRecord() {
+    public int getTotalRecord(String board_tbl, String search_option, String search_data) {
         int result = 0;
         getConn();
         try {
-            String sql = "select count(*) count from " + tableName01 + " where board_no > 0";
+            String sql = "select count(*) count from " + tableName01 + " where board_tbl = ?";
             
+            if (search_option.length() > 0 && search_data.length() > 0) {
+                if (search_option.equals("board_writer") || search_option.equals("board_subject") || search_option.equals("board_content")) {
+                    sql += " and " + search_option + " like ?";
+                } else if (search_option.equals("writer_subject_content")) {
+                    sql += " and (board_writer like ? or board_subject like ? or board_content like ?)";
+                }
+            }
+            
+            int k = 0;
             pstmt = conn.prepareStatement(sql);
+            pstmt.setString(++k, board_tbl);
+            
+            if (search_option.length() > 0 && search_data.length() > 0) {
+                if (search_option.equals("board_writer") || search_option.equals("board_subject") || search_option.equals("board_content")) {
+                    pstmt.setString(++k, '%' + search_data + '%');
+                } else if (search_option.equals("writer_subject_content")) {
+                    pstmt.setString(++k, '%' + search_data + '%');
+                    pstmt.setString(++k, '%' + search_data + '%');
+                    pstmt.setString(++k, '%' + search_data + '%');
+                }
+            }
+            
+            // System.out.println(sql);
+            
             rs = pstmt.executeQuery();
             if (rs.next()) {
                 result = rs.getInt(1);
@@ -142,22 +165,49 @@ public class BoardDAO {
         return result;
     }
     
-    public ArrayList<BoardDTO> getSelectAll(int startRecord, int endRecord) {
+    public ArrayList<BoardDTO> getSelectAll(int startRecord, int endRecord, String board_tbl, String search_option, String search_data) {
         ArrayList<BoardDTO> list = new ArrayList<>();
         getConn();
         try {
             String basicSql = "";
-            basicSql += "select board_no, board_num, board_tbl, board_writer, board_subject, board_content, board_email, board_passwd, board_ref_no, board_step_no, board_level_no, board_parent_no, board_hit, board_ip, member_no, board_notice_no, board_secret, board_regi_date from " + tableName01;
-            basicSql += " where board_no > 0";
-            basicSql += " order by board_no desc";
+            basicSql += "select t1.*, ";
+            basicSql += "(select count(*) from " + tableName01 + " t2 where t2.board_parent_no = t1.board_no) board_child_counter ";
+            basicSql += " from " + tableName01 + " t1 where board_tbl = ?";
+            
+            if (search_option.length() > 0 && search_data.length() > 0) {
+                if (search_option.equals("board_writer") || search_option.equals("board_subject") || search_option.equals("board_content")) {
+                    basicSql += " and " + search_option + " like ?";
+                } else if (search_option.equals("writer_subject_content")) {
+                    basicSql += " and (board_writer like ? or board_subject like ? or board_content like ?)";
+                }
+            }
+            
+            basicSql += " order by board_notice_no desc, board_ref_no desc, board_level_no asc";
+            
             String sql = "";
             sql += "select * from (select A.*, Rownum Rnum from (";
             sql += basicSql;
             sql += ") A) where Rnum >= ? and Rnum <= ?";
             
+            int k = 0;
             pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, startRecord);
-            pstmt.setInt(2, endRecord);
+            pstmt.setString(++k, board_tbl);
+            
+            if (search_option.length() > 0 && search_data.length() > 0) {
+                if (search_option.equals("board_writer") || search_option.equals("board_subject") || search_option.equals("board_content")) {
+                    pstmt.setString(++k, '%' + search_data + '%');
+                } else if (search_option.equals("writer_subject_content")) {
+                    pstmt.setString(++k, '%' + search_data + '%');
+                    pstmt.setString(++k, '%' + search_data + '%');
+                    pstmt.setString(++k, '%' + search_data + '%');
+                }
+            }
+            
+            pstmt.setInt(++k, startRecord);
+            pstmt.setInt(++k, endRecord);
+            
+            // System.out.println(sql);
+            
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 BoardDTO dto = new BoardDTO();

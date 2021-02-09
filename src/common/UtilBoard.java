@@ -21,11 +21,11 @@ public class UtilBoard extends Util {
         search_option = search_option.trim();
         if (search_option.equals("")) {
             
-        } else if (search_option.equals("writer")) {
+        } else if (search_option.equals("board_writer")) {
             
-        } else if (search_option.equals("subject")) {
+        } else if (search_option.equals("board_subject")) {
             
-        } else if (search_option.equals("content")) {
+        } else if (search_option.equals("board_content")) {
             
         } else if (search_option.equals("writer_subject_content")) {
             

@@ -179,22 +179,16 @@ public class BoardController extends HttpServlet {
             // 페이징 -----------------------
             int pageSize = 5; // 한페이지 당 보여질 행 개수
             int blockSize = 5; // 한 블록 당 보여질 페이지 개수
-            int totalRecord = dao.getTotalRecord(); // 총 행 개수
-            int recordNum = totalRecord - pageSize * (pageNumber - 1); // 화면상에 보여질 일련번호 (행 개수 기준)
-            int startRecord = pageSize * (pageNumber -1) + 1; // 시작 행
-            int lastRecord = pageSize * pageNumber; // 마지막 행
+            int totalRecord = dao.getTotalRecord(board_tbl, search_option, search_data); // 총 행 개수
             
-            int totalPage = 0; // 총 페이지
-            int startPage = 1; // 시작 페이지
-            int lastPage = 1; // 마지막 페이지
-            if (totalRecord > 0) {
-                totalPage = totalRecord / pageSize + (totalRecord % pageSize == 0 ? 0 : 1);
-                startPage = (pageNumber / blockSize - (pageNumber % blockSize != 0 ? 0 : 1)) * blockSize + 1;
-                lastPage = startPage + blockSize - 1;
-                if (lastPage > totalPage) {
-                    lastPage = totalPage;
-                }
-            }
+            int[] pagerArray = util.pager(pageSize, blockSize, totalRecord, pageNumber);
+            int recordNum = pagerArray[0];
+            int startRecord = pagerArray[1];
+            int lastRecord = pagerArray[2];
+            int totalPage = pagerArray[3];
+            int startPage = pagerArray[4];
+            int lastPage = pagerArray[5];
+            
             request.setAttribute("pageSize", pageSize);
             request.setAttribute("blockSize", blockSize);
             request.setAttribute("totalRecord", totalRecord);
@@ -207,7 +201,7 @@ public class BoardController extends HttpServlet {
             // ------------------------------
             
             // 게시글 리스트 ----------------
-            ArrayList<BoardDTO> list = dao.getSelectAll(startRecord, lastRecord);
+            ArrayList<BoardDTO> list = dao.getSelectAll(startRecord, lastRecord, board_tbl, search_option, search_data);
             
             request.setAttribute("list", list);
             // ------------------------------
@@ -219,6 +213,8 @@ public class BoardController extends HttpServlet {
             request.setAttribute("search_option", search_option);
             request.setAttribute("search_data", search_data);
             // ------------------------------
+            
+            request.setAttribute("menu_gubun", "board_list");
             
             temp = "/board/list.jsp";
             RequestDispatcher rd = request.getRequestDispatcher(temp);

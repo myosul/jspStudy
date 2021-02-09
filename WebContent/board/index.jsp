@@ -9,7 +9,7 @@ board_tbl : <span id="span_board_tbl">${ board_tbl }</span><br>
 pageNumber : <span id="span_pageNumber">${ pageNumber }</span><br>
 board_no : <span id="span_board_no">${ board_no }</span><br>
 search_option : <span id="span_search_option">${ search_option }</span><br>
-search_date : <span id="span_search_date">${ search_date }</span><br>
+search_data : <span id="span_search_data">${ search_data }</span><br>
 
 <input type="text" name="a" style="display: ;"><br><!-- ajax 테스트용 -->
 
