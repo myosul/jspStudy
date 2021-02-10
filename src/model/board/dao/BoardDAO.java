@@ -238,5 +238,79 @@ public class BoardDAO {
         }
         return list;
     }
+    
+    public BoardDTO getSelect(int board_no) {
+        BoardDTO dto = new BoardDTO();
+        getConn();
+        try {
+            String sql = "";
+            sql += "SELECT * FROM ";
+            sql += "(";
+            sql += "select b.*";
+            sql += ", (select count(*) from " + tableName01 + " where board_ref_no = b.board_ref_no and board_step_no = (b.board_step_no + 1) and board_level_no = (b.board_level_no + 1)) child_counter";
+            sql += ", LAG(board_no) Over (order by board_notice_no desc, board_ref_no desc, board_level_no asc) board_pre_no";
+            sql += ", LAG(board_subject) Over (order by board_notice_no desc, board_ref_no desc, board_level_no asc) board_pre_subject";
+            sql += ", LEAD(board_no) Over (order by board_notice_no desc, board_ref_no desc, board_level_no asc) board_nxt_no";
+            sql += ", LEAD(board_subject) Over (order by board_notice_no desc, board_ref_no desc, board_level_no asc) board_nxt_subject";
+            sql += " from " + tableName01 + " b order by board_notice_no desc, board_ref_no desc, board_level_no asc";
+            sql += ") WHERE board_no = ?";
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, board_no);
+            
+            // System.out.println(sql);
+            
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                dto.setBoard_no(rs.getInt("board_no"));
+                dto.setBoard_num(rs.getInt("board_num"));
+                dto.setBoard_tbl(rs.getString("board_tbl"));
+                dto.setBoard_writer(rs.getString("board_writer"));
+                dto.setBoard_subject(rs.getString("board_subject"));
+                dto.setBoard_content(rs.getString("board_content"));
+                dto.setBoard_email(rs.getString("board_email"));
+                dto.setBoard_passwd(rs.getString("board_passwd"));
+                dto.setBoard_ref_no(rs.getInt("board_ref_no"));
+                dto.setBoard_step_no(rs.getInt("board_step_no"));
+                dto.setBoard_level_no(rs.getInt("board_level_no"));
+                dto.setBoard_parent_no(rs.getInt("board_parent_no"));
+                dto.setBoard_hit(rs.getInt("board_hit"));
+                dto.setBoard_ip(rs.getString("board_ip"));
+                dto.setMember_no(rs.getInt("member_no"));
+                dto.setBoard_notice_no(rs.getInt("board_notice_no"));
+                dto.setBoard_secret(rs.getString("board_secret"));
+                dto.setBoard_regi_date(rs.getTimestamp("board_regi_date"));
+                
+                dto.setBoard_child_counter(rs.getInt("child_counter"));
+                
+                dto.setBoard_pre_no(rs.getInt("board_pre_no"));
+                dto.setBoard_pre_subject(rs.getString("board_pre_subject"));
+                dto.setBoard_nxt_no(rs.getInt("board_nxt_no"));
+                dto.setBoard_nxt_subject(rs.getString("board_nxt_subject"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            getConnClose(rs, pstmt, conn);
+        }
+        return dto;
+    }
+    
+    public void setUpdateHit(int board_no) {
+        getConn();
+        try {
+            String sql = "update " + tableName01 + " set board_hit = (board_hit + 1) where board_no = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, board_no);
+            
+            // System.out.println(sql);
+            
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            getConnClose(rs, pstmt, conn);
+        }
+    }
 
 }

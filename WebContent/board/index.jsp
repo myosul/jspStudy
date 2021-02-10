@@ -45,7 +45,17 @@ function GoBoardPage(value1, value2) {
                 "board_tbl" : $("#span_tbl").text(),
                 "pageNumber" : $("#span_pageNumber").text(),
                 "search_option" : $("#span_search_option").text(),
+                "search_data" : $("#span_search_data").text()
+        }
+    } else if (value1 == "view") {
+        $("#span_board_no").text(value2);
+        var param = {
+                "board_no" : $("#span_board_no").text(),
+                "board_tbl" : $("#span_board_tbl").text(),
+                "pageNumber" : $("#span_pageNumber").text(),
+                "search_option" : $("#span_search_option").text(),
                 "search_data" : $("#span_search_data").text(),
+                "view_passwd" : $("#view_passwd").val()
         }
     }
     $.ajax({

@@ -216,10 +216,32 @@ public class BoardController extends HttpServlet {
             
             request.setAttribute("menu_gubun", "board_list");
             
-            temp = "/board/list.jsp";
-            RequestDispatcher rd = request.getRequestDispatcher(temp);
+            page = "/board/list.jsp";
+            RequestDispatcher rd = request.getRequestDispatcher(page);
             rd.forward(request, response);
             
+        } else if (url.indexOf("view.do") != -1) {
+            
+            dao.setUpdateHit(board_no);
+            dto = dao.getSelect(board_no);
+            
+            String imsiPage = "viewPage";
+            if (dto.getBoard_secret().equals("T")) { // 비밀글이면
+                String view_passwd = util.nullCheck(request.getParameter("view_passwd"));
+                if (dto.getBoard_passwd().equals(view_passwd) && !dto.getBoard_passwd().equals("")) {
+                    
+                } else {
+                    imsiPage = "viewPasswdPage";
+                }
+            }
+            
+            request.setAttribute("menu_gubun", "board_view");
+            request.setAttribute("dto", dto);
+            request.setAttribute("imsiPage", imsiPage);
+            
+            page = "/board/view.jsp";
+            RequestDispatcher rd = request.getRequestDispatcher(page);
+            rd.forward(request, response);
         }
 	    
     }
