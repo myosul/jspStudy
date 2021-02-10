@@ -96,3 +96,16 @@ create sequence seq_board start with 1 increment by 1 minvalue 1;
 
 
 SELECT * FROM board;
+
+
+SELECT * FROM (
+select b.*, 
+(select count(*) from board where board_ref_no = b.board_ref_no and board_step_no = (b.board_step_no + 1) and board_level_no = (b.board_level_no + 1)) child_counter, 
+LAG(board_no) Over (order by board_notice_no desc, board_ref_no desc, board_level_no asc) board_pre_no, 
+LAG(board_subject) Over (order by board_notice_no desc, board_ref_no desc, board_level_no asc) board_pre_subject, 
+LEAD(board_no) Over (order by board_notice_no desc, board_ref_no desc, board_level_no asc) board_nxt_no, 
+LEAD(board_subject) Over (order by board_notice_no desc, board_ref_no desc, board_level_no asc) board_nxt_subject 
+from board b 
+order by board_notice_no desc, board_ref_no desc, board_level_no ASC
+)
+WHERE board_no = 17;
