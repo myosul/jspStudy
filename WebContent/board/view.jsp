@@ -60,19 +60,20 @@
         </tr>
         <tr>
             <td colspan="2">
-                <button type="button" onclick="GoBoardPage('add', '');">글쓰기</button>
-                
-                <c:if test="${ dto.board_notice_no == 0}">
-                <button type="button" onclick="GoBoardPage('reply', '${ dto.board_no }');">답변쓰기</button>
-                </c:if>
-                
-                <button type="button" onclick="GoBoardPage('modify', '${ dto.board_no }');">수정하기</button>
+                <button type="button" onclick="select_page('1');">목록으로</button>
                 
                 <c:if test="${ dto.board_child_counter == 0 }">
                 <button type="button" onclick="GoBoardPage('delete', '${ dto.board_no }');">삭제하기</button>
                 </c:if>
                 
-                <button type="button" onclick="select_page('1');">목록으로</button>
+                <button type="button" onclick="GoBoardPage('modify', '${ dto.board_no }');">수정하기</button>
+                
+                <c:if test="${ dto.board_notice_no == 0}">
+                <button type="button" onclick="GoBoardPage('reply', '${ dto.board_no }');">답변쓰기</button>
+                </c:if>
+                
+                <button type="button" onclick="GoBoardPage('add', '');">글쓰기</button>
+                
             </td>
         </tr>
         <tr>
