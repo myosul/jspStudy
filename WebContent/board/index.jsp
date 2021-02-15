@@ -28,6 +28,11 @@ function GoBoardPage(value1, value2) {
     if (value1 == "add") {
         $("#span_board_no").text("");
         var param = {}
+    } else if (value1 == "reply") {
+        $("#span_board_no").text(value2);
+        var param = {
+                "board_no" : $("#span_board_no").text()
+        }
     } else if (value1 == "addProc") {
         var param = {
                 "board_no" : $("#span_board_no").text(),
@@ -57,7 +62,7 @@ function GoBoardPage(value1, value2) {
                 "search_data" : $("#span_search_data").text(),
                 "view_passwd" : $("#view_passwd").val()
         }
-    }
+    } 
     $.ajax({
         type: "post",
         data: param,

@@ -4,7 +4,12 @@
 
 <table border="1" align="center">
     <tr>
+        <c:if test="${ board_no <= 0 }">
         <td colspan="2"><h2>게시글쓰기</h2></td>
+        </c:if>
+        <c:if test="${ board_no > 0 }">
+        <td colspan="2"><h2>답변글쓰기</h2></td>
+        </c:if>
     </tr>
     <tr>
         <td style="align: center;">작성자</td>
@@ -20,11 +25,11 @@
     </tr>
     <tr>
         <td style="align: center;">제목</td>
-        <td><input type="text" name="board_subject" id="board_subject"></td>
+        <td><input type="text" name="board_subject" id="board_subject" value="${ dto.board_subject }"></td>
     </tr>
     <tr>
         <td style="align: center;">내용</td>
-        <td><textarea name="board_content" id="board_content" style="width: 640px; height: 100px;"></textarea></td>
+        <td><textarea name="board_content" id="board_content" style="width: 640px; height: 100px;">${ dto.board_content }</textarea></td>
     </tr>
     <tr>
         <td style="align: center;">공지글</td>
