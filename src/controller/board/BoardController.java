@@ -34,7 +34,7 @@ public class BoardController extends HttpServlet {
 	    request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
         
-        String temp;
+        String temp; // 공용 임시변수
         
         UtilBoard util = new UtilBoard();
         
