@@ -111,15 +111,12 @@ public class BoardController extends HttpServlet {
             
             request.setAttribute("menu_gubun", "board_add");
             
-            String board_writer = "";
-            String board_subject = "";
-            String board_content = "";
             if (board_no > 0) { // 답변이면
                 dto = dao.getSelect(board_no);
                 
                 temp = "[" + dto.getBoard_writer() + "]님이 작성한 글입니다.\n";
                 temp += dto.getBoard_content();
-                temp += temp.replace("\n", "\n> ");
+                temp = temp.replace("\n", "\n> ");
                 temp += "\n------------------------------------------------\n";
                 
                 dto.setBoard_content(temp);
