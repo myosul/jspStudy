@@ -107,9 +107,24 @@ public class BoardController extends HttpServlet {
             RequestDispatcher rd = request.getRequestDispatcher(page);
             rd.forward(request, response);
             
-        } else if (url.indexOf("add.do") != -1) {
+        } else if (url.indexOf("add.do") != -1 || url.indexOf("reply.do") != -1) {
             
             request.setAttribute("menu_gubun", "board_add");
+            
+            String board_writer = "";
+            String board_subject = "";
+            String board_content = "";
+            if (board_no > 0) { // 답변이면
+                dto = dao.getSelect(board_no);
+                
+                temp = "[" + dto.getBoard_writer() + "]님이 작성한 글입니다.\n";
+                temp += dto.getBoard_content();
+                temp += temp.replace("\n", "\n> ");
+                temp += "\n------------------------------------------------\n";
+                
+                dto.setBoard_content(temp);
+                request.setAttribute("dto", dto);
+            }
             
             page = "/board/add.jsp";
             RequestDispatcher rd = request.getRequestDispatcher(page);
@@ -144,6 +159,15 @@ public class BoardController extends HttpServlet {
             int board_level_no = 1;
             int board_parent_no = 0;
             
+            if (board_no > 0) {
+                BoardDTO dto2 = dao.getSelect(board_no);
+                dao.setUpdateReLevel(dto2); // 답변글.. // 부모 글코다 큰 re_level의 값을 전부 1씩 증가시켜준다.
+                board_ref_no = dto2.getBoard_ref_no();
+                board_step_no = dto2.getBoard_step_no() + 1;
+                board_level_no = dto2.getBoard_level_no() + 1;
+                board_parent_no = dto2.getBoard_no();
+            }
+            
             int board_hit = 0;
             
             dto.setBoard_no(board_no);
@@ -177,8 +201,8 @@ public class BoardController extends HttpServlet {
         } else if (url.indexOf("list.do") != -1) {
             
             // 페이징 -----------------------
-            int pageSize = 5; // 한페이지 당 보여질 행 개수
-            int blockSize = 5; // 한 블록 당 보여질 페이지 개수
+            int pageSize = 10; // 한페이지 당 보여질 행 개수
+            int blockSize = 10; // 한 블록 당 보여질 페이지 개수
             int totalRecord = dao.getTotalRecord(board_tbl, search_option, search_data); // 총 행 개수
             
             int[] pagerArray = util.pager(pageSize, blockSize, totalRecord, pageNumber);

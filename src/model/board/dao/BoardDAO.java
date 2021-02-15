@@ -312,5 +312,20 @@ public class BoardDAO {
             getConnClose(rs, pstmt, conn);
         }
     }
+    
+    public void setUpdateReLevel(BoardDTO dto) {
+        getConn();
+        try {
+            String sql = "update " + tableName01 + " set board_level_no = (board_level_no + 1) where board_ref_noo = ? and board_level_no > ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, dto.getBoard_ref_no());
+            pstmt.setInt(2, dto.getBoard_level_no());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            getConnClose(rs, pstmt, conn);
+        }
+    }
 
 }
