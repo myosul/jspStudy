@@ -246,6 +246,9 @@ public class BoardController extends HttpServlet {
             dao.setUpdateHit(board_no);
             dto = dao.getSelect(board_no);
             
+            String board_content = dto.getBoard_content().replace("\n", "<br>");
+            dto.setBoard_content(board_content);
+            
             String imsiPage = "viewPage";
             if (dto.getBoard_secret().equals("T")) { // 비밀글이면
                 String view_passwd = util.nullCheck(request.getParameter("view_passwd"));
