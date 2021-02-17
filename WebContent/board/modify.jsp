@@ -4,20 +4,15 @@
 
 <table border="1" align="center">
     <tr>
-        <c:if test="${ board_no <= 0 }">
-        <td colspan="2"><h2>게시글쓰기</h2></td>
-        </c:if>
-        <c:if test="${ board_no > 0 }">
-        <td colspan="2"><h2>답변글쓰기</h2></td>
-        </c:if>
+        <td colspan="2"><h2>게시글수정</h2></td>
     </tr>
     <tr>
         <td style="align: center;">작성자</td>
-        <td><input type="text" name="board_writer" id="board_writer"></td>
+        <td><input type="text" name="board_writer" id="board_writer" value="${ dto.board_writer }" readonly></td>
     </tr>
     <tr>
         <td style="align: center;">이메일</td>
-        <td><input type="text" name="board_email" id="board_email"></td>
+        <td><input type="text" name="board_email" id="board_email" value="${ dto.board_email }"></td>
     </tr>
     <tr>
         <td style="align: center;">비밀번호</td>
@@ -34,34 +29,47 @@
     <tr>
         <td style="align: center;">공지글</td>
         <td>
-            <input type="text" name="board_notice" id="board_notice">
+            <input type="text" name="board_notice" id="board_notice" value="${ dto.board_notice_no }">
+            <c:if test="${ dto.board_notice_no > 0 }">
+            <input type="checkbox" name="board_notice_checkBox" id="board_notice_checkBox" value="T" onclick="clickChk('notice_check')" checked>
+            공지글 체크
+            </c:if>
+            <c:if test="${ dto.board_notice_no <= 0 }">
             <input type="checkbox" name="board_notice_checkBox" id="board_notice_checkBox" value="T" onclick="clickChk('notice_check')">
             공지글 체크
+            </c:if>
         </td>
     </tr>
     <tr>
         <td style="align: center;">비밀글</td>
         <td>
-            <input type="text" name="board_secret" id="board_secret">
+            <input type="text" name="board_secret" id="board_secret" value="${ dto.board_secret }">
+            <c:if test="${ dto.board_secret == 'T' }">
+            <input type="checkbox" name="board_secret_checkBox" id="board_secret_checkBox" value="T" onclick="clickChk('secret_check')" checked>
+            비밀글 체크
+            </c:if>
+            <c:if test="${ dto.board_secret != 'T' }">
             <input type="checkbox" name="board_secret_checkBox" id="board_secret_checkBox" value="T" onclick="clickChk('secret_check')">
             비밀글 체크
+            </c:if>
         </td>
     </tr>
     <tr>
         <td colspan="2" height="50px;">
             <button type="button" id="btnList">목록으로</button>
-            <button type="button" id="btnAdd">등록하기</button>
+            <button type="button" id="btnModify">수정하기</button>
         </td>
     </tr>
 </table>
 
 <script>
 $(document).ready(function() {
-    $("#board_writer").focus();
+    $("#board_subject").select();
+    $("#board_subject").focus();
     
-    $("#btnAdd").click(function() {
-        if (confirm('등록하시겠습니까?')) {
-            GoBoardPage('addProc', '');
+    $("#btnModify").click(function() {
+        if (confirm('수정하시겠습니까?')) {
+            GoBoardPage('modifyProc', '');
         }
     });
     

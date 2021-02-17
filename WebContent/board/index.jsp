@@ -28,12 +28,12 @@ function GoBoardPage(value1, value2) {
     if (value1 == "add") {
         $("#span_board_no").text("");
         var param = {}
-    } else if (value1 == "reply") {
+    } else if (value1 == "reply" || value1 == "modify" || value1 == "delete") {
         $("#span_board_no").text(value2);
         var param = {
                 "board_no" : $("#span_board_no").text()
         }
-    } else if (value1 == "addProc") {
+    } else if (value1 == "addProc" || value1 == "modifyProc" || value1 == "deleteProc") {
         var param = {
                 "board_no" : $("#span_board_no").text(),
                 "board_tbl" : $("#span_board_tbl").text(),
@@ -62,15 +62,17 @@ function GoBoardPage(value1, value2) {
                 "search_data" : $("#span_search_data").text(),
                 "view_passwd" : $("#view_passwd").val()
         }
-    } 
+    }
     $.ajax({
         type: "post",
         data: param,
         url: url,
         success: function(data) { // 콜백함수(서버에서 처리가 오나료된 후 실행되는 코드)
-            if (value1 == "addProc") {
+            if (value1 == "addProc" || value1 == "deleteProc") {
                 select_page('1');
-            } else {
+            } else if (value1 == "modifyProc") { 
+            	GoBoardPage('view', $("#span_board_no").text());
+        	} else {
                 $("#result").html(data);
             }
         }
@@ -81,5 +83,21 @@ function select_page(value1) {
     $("#span_pageNumber").text(value1);
     $("#span_board_no").text("");
     GoBoardPage('list', '');
+}
+
+function clickChk(value1) {
+    if (value1 == 'notice_check') {
+        if ($("input:checkbox[name=board_notice_checkBox]").is(":checked") == true) {
+            $("#board_notice").val("T");
+        } else {
+            $("#board_notice").val("");
+        }
+    } else if (value1 == 'secret_check') {
+        if ($("input:checkbox[name=board_secret_checkBox]").is(":checked") == true) {
+            $("#board_secret").val("T");
+        } else {
+            $("#board_secret").val("");
+        }
+    }
 }
 </script>

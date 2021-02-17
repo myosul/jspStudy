@@ -112,3 +112,10 @@
     </table>
     </c:otherwise>
 </c:choose>
+
+<script>
+$(document).ready(function() {
+    var content = $("#content").text().replace(/(?:\r\n|\r|\n)/g, '<br>');
+    $("#content").html(content);
+});
+</script>

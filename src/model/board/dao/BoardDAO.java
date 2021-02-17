@@ -327,5 +327,47 @@ public class BoardDAO {
             getConnClose(rs, pstmt, conn);
         }
     }
+    
+    public int setUpdate(BoardDTO dto) {
+        int result = 0;
+        getConn();
+        try {
+            String sql = "";
+            sql += "update " + tableName01 + " set board_subject = ?, board_content = ?, board_email = ?, board_ip = ?, board_notice_no = ?, board_secret = ? where board_no = ? and board_passwd = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, dto.getBoard_subject());
+            pstmt.setString(2, dto.getBoard_content());
+            pstmt.setString(3, dto.getBoard_email());
+            pstmt.setString(4, dto.getBoard_ip());
+            pstmt.setInt(5, dto.getBoard_notice_no());
+            pstmt.setString(6, dto.getBoard_secret());
+            pstmt.setInt(7, dto.getBoard_no());
+            pstmt.setString(8, dto.getBoard_passwd());
+            result = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            getConnClose(rs, pstmt, conn);
+        }
+        return result;
+    }
+    
+    public int setDelete(BoardDTO dto) {
+        int result = 0;
+        getConn();
+        try {
+            String sql = "";
+            sql += "delete from " + tableName01 + " where board_no = ? and board_passwd = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, dto.getBoard_no());
+            pstmt.setString(2, dto.getBoard_passwd());
+            result = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            getConnClose(rs, pstmt, conn);
+        }
+        return result;
+    }
 
 }

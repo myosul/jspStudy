@@ -246,8 +246,8 @@ public class BoardController extends HttpServlet {
             dao.setUpdateHit(board_no);
             dto = dao.getSelect(board_no);
             
-            String board_content = dto.getBoard_content().replace("\n", "<br>");
-            dto.setBoard_content(board_content);
+            // String board_content = dto.getBoard_content().replace("\n", "<br>");
+            // dto.setBoard_content(board_content);
             
             String imsiPage = "viewPage";
             if (dto.getBoard_secret().equals("T")) { // 비밀글이면
@@ -266,6 +266,91 @@ public class BoardController extends HttpServlet {
             page = "/board/view.jsp";
             RequestDispatcher rd = request.getRequestDispatcher(page);
             rd.forward(request, response);
+        } else if (url.indexOf("modify.do") != -1) {
+            
+            request.setAttribute("menu_gubun", "board_modify");
+            
+            dto = dao.getSelect(board_no);
+            
+            request.setAttribute("dto", dto);
+            
+            page = "/board/modify.jsp";
+            RequestDispatcher rd = request.getRequestDispatcher(page);
+            rd.forward(request, response);
+            
+        } else if (url.indexOf("modifyProc.do") != -1) {
+            
+            String board_writer = request.getParameter("board_writer");
+            String board_email = request.getParameter("board_email");
+            String board_passwd = request.getParameter("board_passwd");
+            String board_subject = request.getParameter("board_subject");
+            String board_content = request.getParameter("board_content");
+            String board_notice = request.getParameter("board_notice");
+            
+            int board_notice_no;
+            if (board_notice == null || board_notice.trim().equals("") || !board_notice.equals("T") || board_notice.equals("0")) {
+                board_notice_no = 0;
+            } else {
+                board_notice_no = dao.getMaxNoticeNo(board_tbl) + 1;
+            }
+            
+            String board_secret = request.getParameter("board_secret");
+            if (board_secret == null || board_secret.trim().equals("") || !board_secret.equals("T")) {
+                board_secret = "F";
+            } else {
+                board_secret = "T";
+            }
+            
+            dto.setBoard_no(board_no);
+            dto.setBoard_writer(board_writer);
+            dto.setBoard_subject(board_subject);
+            dto.setBoard_content(board_content);
+            dto.setBoard_email(board_email);
+            dto.setBoard_passwd(board_passwd);
+            dto.setBoard_ip(ip);
+            dto.setMember_no(cookNo);
+            dto.setBoard_notice_no(board_notice_no);
+            dto.setBoard_secret(board_secret);
+            
+            int result = dao.setUpdate(dto);
+            
+            if (result > 0) { // 성공
+                System.out.println("-- 글 수정 성공 --");
+                return;
+            } else { // 실패
+                System.out.println("-- 글 수정 실패 --");
+                return;
+            }
+            
+        } else if (url.indexOf("delete.do") != -1) {
+            
+            request.setAttribute("menu_gubun", "board_delete");
+            
+            dto = dao.getSelect(board_no);
+            
+            request.setAttribute("dto", dto);
+            
+            page = "/board/delete.jsp";
+            RequestDispatcher rd = request.getRequestDispatcher(page);
+            rd.forward(request, response);
+            
+        } else if (url.indexOf("deleteProc.do") != -1) {
+            
+            String board_passwd = request.getParameter("board_passwd");
+            
+            dto.setBoard_no(board_no);
+            dto.setBoard_passwd(board_passwd);
+            
+            int result = dao.setDelete(dto);
+            
+            if (result > 0) { // 성공
+                System.out.println("-- 글 삭제 성공 --");
+                return;
+            } else { // 실패
+                System.out.println("-- 글 삭제 실패 --");
+                return;
+            }
+            
         }
 	    
     }
