@@ -1,6 +1,7 @@
 package controller.board;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,7 @@ import common.Util;
 import common.UtilBoard;
 import model.board.dao.BoardDAO;
 import model.board.dto.BoardDTO;
+import model.board.dto.BoardCommentDTO;
 
 @WebServlet("/board_servlet/*")
 public class BoardController extends HttpServlet {
@@ -33,6 +35,7 @@ public class BoardController extends HttpServlet {
         
 	    request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
+        PrintWriter out = response.getWriter();
         
         String temp; // 공용 임시변수
         
@@ -84,17 +87,22 @@ public class BoardController extends HttpServlet {
         search_option = searchArray[0];
         search_data = searchArray[1];
         
-        request.setAttribute("search_option", search_option);
         request.setAttribute("search_data", search_data);
         // -----------------
         
+        // 세션 ------------
         String[] sessionArray = util.sessionCheck(request);
         int cookNo = Integer.parseInt(sessionArray[0]);
         String cookId = sessionArray[1];
         String cookName = sessionArray[2];
         
+        request.setAttribute("cookId", cookId);
+        request.setAttribute("cookName", cookName);
+        // ------------------
+        
         BoardDAO dao = new BoardDAO();
         BoardDTO dto = new BoardDTO();
+        BoardCommentDTO cDto = new BoardCommentDTO();
         
         String page = "/main/main.jsp"; // 포워딩할 주소
         
@@ -189,13 +197,15 @@ public class BoardController extends HttpServlet {
             
             if (result > 0) { // 성공
                 System.out.println("-- 글 등록 성공 --");
-                return;
             } else { // 실패
                 System.out.println("-- 글 등록 실패 --");
-                return;
+                out.println("<script>");
+                out.println("alert('등록하지 못했습니다.');");
+                out.println("select_page('1');");
+                out.println("</script>");
             }
             
-        } else if (url.indexOf("list.do") != -1) {
+        } else if (url.contains("list.do")) {
             
             // 페이징 -----------------------
             int pageSize = 10; // 한페이지 당 보여질 행 개수
@@ -280,9 +290,24 @@ public class BoardController extends HttpServlet {
             
         } else if (url.indexOf("modifyProc.do") != -1) {
             
+            String check_passwd = dao.getSelect(board_no).getBoard_passwd();
+            String board_passwd = request.getParameter("board_passwd");
+            
+            if (!check_passwd.equals(board_passwd)) {
+                /*
+                out.println("<script>");
+                out.println("alert('비밀번호가 다릅니다.');");
+                out.println("GoBoardPage('view', "+ board_no +");");
+                out.println("</script>");
+                */
+                out.println("<script>");
+                out.println("$('#span_board_passwd').text('F');");
+                out.println("</script>");
+                return;
+            }
+            
             String board_writer = request.getParameter("board_writer");
             String board_email = request.getParameter("board_email");
-            String board_passwd = request.getParameter("board_passwd");
             String board_subject = request.getParameter("board_subject");
             String board_content = request.getParameter("board_content");
             String board_notice = request.getParameter("board_notice");
@@ -316,10 +341,18 @@ public class BoardController extends HttpServlet {
             
             if (result > 0) { // 성공
                 System.out.println("-- 글 수정 성공 --");
-                return;
+                /*
+                out.println("<script>");
+                // out.println("alert('정상적으로 수정되었습니다.');");
+                out.println("GoBoardPage('view', "+ board_no +");");
+                out.println("</script>");
+                */
             } else { // 실패
                 System.out.println("-- 글 수정 실패 --");
-                return;
+                out.println("<script>");
+                out.println("alert('수정하지 못했습니다.');");
+                out.println("GoBoardPage('view', "+ board_no +");");
+                out.println("</script>");
             }
             
         } else if (url.indexOf("delete.do") != -1) {
@@ -336,7 +369,15 @@ public class BoardController extends HttpServlet {
             
         } else if (url.indexOf("deleteProc.do") != -1) {
             
+            String check_passwd = dao.getSelect(board_no).getBoard_passwd();
             String board_passwd = request.getParameter("board_passwd");
+            
+            if (!check_passwd.equals(board_passwd)) {
+                out.println("<script>");
+                out.println("$('#span_board_passwd').text('F');");
+                out.println("</script>");
+                return;
+            }
             
             dto.setBoard_no(board_no);
             dto.setBoard_passwd(board_passwd);
@@ -345,10 +386,89 @@ public class BoardController extends HttpServlet {
             
             if (result > 0) { // 성공
                 System.out.println("-- 글 삭제 성공 --");
-                return;
             } else { // 실패
                 System.out.println("-- 글 삭제 실패 --");
-                return;
+                out.println("<script>");
+                out.println("alert('삭제하지 못했습니다.');");
+                out.println("GoBoardPage('view', "+ board_no +");");
+                out.println("</script>");
+            }
+            
+        } else if (url.contains("commentList.do")) {
+            
+            // comment_pageNumber-------
+            int comment_pageNumber = util.toNumber(request.getParameter("comment_pageNumber"));
+            if (comment_pageNumber <= 0) {
+                comment_pageNumber = 1;
+            }
+            
+            request.setAttribute("comment_pageNumber", comment_pageNumber);
+            // -----------------
+            
+            // 페이징 -----------------------
+            int pageSize = 5; // 한페이지 당 보여질 행 개수
+            int blockSize = 10; // 한 블록 당 보여질 페이지 개수
+            int totalRecord = dao.getTotalCommentRecord(board_no); // 총 행 개수
+            
+            int[] pagerArray = util.pager(pageSize, blockSize, totalRecord, comment_pageNumber);
+            int recordNum = pagerArray[0];
+            int startRecord = pagerArray[1];
+            int lastRecord = pagerArray[2];
+            int totalPage = pagerArray[3];
+            int startPage = pagerArray[4];
+            int lastPage = pagerArray[5];
+            
+            request.setAttribute("pageSize", pageSize);
+            request.setAttribute("blockSize", blockSize);
+            request.setAttribute("totalRecord", totalRecord);
+            request.setAttribute("recordNum", recordNum);
+            request.setAttribute("startRecord", startRecord);
+            request.setAttribute("lastRecord", lastRecord);
+            request.setAttribute("totalPage", totalPage);
+            request.setAttribute("startPage", startPage);
+            request.setAttribute("lastPage", lastPage);
+            // ------------------------------
+            
+            // 게시글 코멘트 리스트 ----------------
+            ArrayList<BoardCommentDTO> commentList = dao.getSelectComment(board_no, startRecord, lastRecord);
+            
+            request.setAttribute("commentList", commentList);
+            // ------------------------------
+            
+            // pageNumber
+            request.setAttribute("comment_pageNumber", comment_pageNumber);
+            
+            request.setAttribute("menu_gubun", "board_comment_list");
+            
+            page = "/board/comment_list.jsp";
+            RequestDispatcher rd = request.getRequestDispatcher(page);
+            rd.forward(request, response);
+            
+        } else if (url.indexOf("commentProc.do") != -1) {
+            
+            String board_comment_writer = request.getParameter("board_comment_writer");
+            String board_comment_passwd = request.getParameter("board_comment_passwd");
+            String board_comment_content = request.getParameter("board_comment_content");
+            
+            BoardCommentDTO commentDto = new BoardCommentDTO();
+            
+            commentDto.setBoard_no(board_no);
+            commentDto.setBoard_comment_writer(board_comment_writer);
+            commentDto.setBoard_comment_content(board_comment_content);
+            commentDto.setBoard_comment_passwd(board_comment_passwd);
+            commentDto.setBoard_comment_ip(ip);
+            commentDto.setMember_no(cookNo);
+            
+            int result = dao.setInsertComment(commentDto);
+            
+            if (result > 0) { // 성공
+                System.out.println("-- 댓글 등록 성공 --");
+            } else { // 실패
+                System.out.println("-- 댓글 등록 실패 --");
+                out.println("<script>");
+                out.println("alert('등록하지 못했습니다.');");
+                out.println("GoCommentPage('1');");
+                out.println("</script>");
             }
             
         }

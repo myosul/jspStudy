@@ -4,10 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import db.DbExample;
 import model.board.dto.BoardDTO;
+import model.board.dto.BoardCommentDTO;
 
 public class BoardDAO {
     
@@ -361,6 +363,93 @@ public class BoardDAO {
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, dto.getBoard_no());
             pstmt.setString(2, dto.getBoard_passwd());
+            result = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            getConnClose(rs, pstmt, conn);
+        }
+        return result;
+    }
+    
+    public int getTotalCommentRecord(int board_no) {
+        int result = 0;
+        getConn();
+        try {
+            String sql = "select count(*) count from " + tableName02 + " where board_no = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, board_no);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                result = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            getConnClose(rs, pstmt, conn);
+        }
+        return result;
+    }
+    
+    public ArrayList<BoardCommentDTO> getSelectComment(int board_no, int startRecord, int endRecord) {
+        ArrayList<BoardCommentDTO> commentList = new ArrayList<>();
+        getConn();
+        try {
+            String basicSql = "";
+            basicSql += "select * from " + tableName02 + " where board_no = ?";
+            basicSql += " order by board_comment_regi_date desc";
+            String sql = "";
+            sql += "select * from (select A.*, Rownum Rnum from (";
+            sql += basicSql;
+            sql += ") A) where Rnum >= ? and Rnum <= ?";
+            
+            int k = 0;
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(++k, board_no);
+            pstmt.setInt(++k, startRecord);
+            pstmt.setInt(++k, endRecord);
+            
+            // System.out.println(sql);
+            
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                BoardCommentDTO commentDto = new BoardCommentDTO();
+                commentDto.setBoard_comment_no(rs.getInt("board_comment_no"));
+                commentDto.setBoard_no(rs.getInt("board_no"));
+                commentDto.setBoard_comment_writer(rs.getString("board_comment_writer"));
+                commentDto.setBoard_comment_content(rs.getString("board_comment_content"));
+                commentDto.setBoard_comment_passwd(rs.getString("board_comment_passwd"));
+                commentDto.setMember_no(rs.getInt("member_no"));
+                commentDto.setBoard_comment_ip(rs.getString("board_comment_ip"));
+                commentDto.setBoard_comment_regi_date(rs.getTimestamp("board_comment_regi_date"));
+                commentList.add(commentDto);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            getConnClose(rs, pstmt, conn);
+        }
+        return commentList;
+    }
+    
+    public int setInsertComment(BoardCommentDTO dto) {
+        int result = 0;
+        conn = getConn();
+        try {
+            String sql = "insert into " + tableName02;
+            sql += " (board_comment_no, board_no, board_comment_writer, board_comment_content, board_comment_passwd, member_no, board_comment_ip, board_comment_regi_date)";
+            sql += " values";
+            sql += " (seq_board_comment.nextval, ?, ?, ?, ?, ?, ?, current_timestamp)";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, dto.getBoard_no());
+            pstmt.setString(2, dto.getBoard_comment_writer());
+            pstmt.setString(3, dto.getBoard_comment_content());
+            pstmt.setString(4, dto.getBoard_comment_passwd());
+            pstmt.setInt(5, dto.getMember_no());
+            pstmt.setString(6, dto.getBoard_comment_ip());
+            
+            System.out.println(sql);
+            
             result = pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -59,7 +59,9 @@ survey_regi_date timestamp default current_timestamp,
 primary key(survey_no)
 );
 
-create sequence seq_survey start with 1 increment by 1 minvalue 1;
+create sequence seq_survey start with 1 increment by 1 nomaxvalue nocache;
+
+
 
 create table survey_answer (
 survey_answer_no number not null primary key,
@@ -68,7 +70,9 @@ survey_answer number not null ,
 survey_answer_regi_date timestamp default current_timestamp
 );
 
-create sequence seq_survey_answer start with 1 increment by 1 minvalue 1;
+create sequence seq_survey_answer start with 1 increment by 1 nomaxvalue nocache;
+
+
 
 create table board (
 board_no number not null,
@@ -92,5 +96,22 @@ board_regi_date timestamp default current_timestamp,
 primary key(board_no)
 );
 
-create sequence seq_board start with 1 increment by 1 minvalue 1;
+create sequence seq_board start with 1 increment by 1 nomaxvalue nocache;
+
+
+CREATE TABLE board_comment (
+board_comment_no NUMBER NOT NULL,
+board_no NUMBER NOT NULL REFERENCES board(board_no),
+board_comment_writer varchar2(50) NOT NULL,
+board_comment_content clob NOT NULL,
+board_comment_passwd varchar2(50) NOT NULL,
+member_no NUMBER NOT NULL,
+board_comment_ip varchar2(50) NOT NULL,
+board_comment_regi_date timestamp default current_timestamp,
+PRIMARY KEY(board_comment_no)
+);
+
+CREATE SEQUENCE seq_board_comment start with 1 increment by 1 nomaxvalue nocache;
+
+SELECT * FROM BOARD_COMMENT;
 

@@ -10,10 +10,11 @@ pageNumber : <span id="span_pageNumber">${ pageNumber }</span><br>
 board_no : <span id="span_board_no">${ board_no }</span><br>
 search_option : <span id="span_search_option">${ search_option }</span><br>
 search_data : <span id="span_search_data">${ search_data }</span><br>
+board_passwd : <span id="span_board_passwd"></span><br>
 
 <input type="text" name="a" style="display: ;"><br><!-- ajax 테스트용 -->
 
-<div id="result" style="border: 1px solid red; height: 500px;"></div>
+<div id="result" style="border: 0px solid red; height: 500px;"></div>
 
 <script>
 $(document).ready(function() {
@@ -67,11 +68,25 @@ function GoBoardPage(value1, value2) {
         type: "post",
         data: param,
         url: url,
-        success: function(data) { // 콜백함수(서버에서 처리가 오나료된 후 실행되는 코드)
+        success: function(data) { // 콜백함수(서버에서 처리가 완료된 후 실행되는 코드)
             if (value1 == "addProc" || value1 == "deleteProc") {
+                $("#result").html(data);
+                if ($("#span_board_passwd").text() == "F") {
+                    alert('비밀번호가 다릅니다.');
+                    $("#span_board_passwd").text("");
+                    GoBoardPage('view', $("#span_board_no").text());
+                    return false;
+                }
                 select_page('1');
             } else if (value1 == "modifyProc") { 
-            	GoBoardPage('view', $("#span_board_no").text());
+            	$("#result").html(data);
+                if ($("#span_board_passwd").text() == "F") {
+                    alert('비밀번호가 다릅니다.');
+                    $("#span_board_passwd").text("");
+                    GoBoardPage('view', $("#span_board_no").text());
+                    return false;
+                }
+                GoBoardPage('view', $("#span_board_no").text());
         	} else {
                 $("#result").html(data);
             }

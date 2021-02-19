@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../include/inc_header.jsp" %>
-
 <c:choose>
     <c:when test="${ imsiPage == 'viewPasswdPage' }">
         <table border="1" align="center" width="800px">
@@ -106,16 +105,37 @@
         </tr>
         <tr>
             <td colspan="2" height="50px" style="padding: 20 0 0 0;">
-                Comment...
+            
+                <a name="comment"></</a>
+                comment_pageNumber : <span id="span_comment_pageNumber">${ comment_pageNumber }</span><br>
+                <div id="commentResult"></div>
+                
             </td>
         </tr>
     </table>
+    <script>
+    $(document).ready(function() {
+        var content = $("#content").text().replace(/(?:\r\n|\r|\n)/g, '<br>');
+        $("#content").html(content);
+        comment_list();
+    });
+    
+    function comment_list() {
+        var param = {
+                "board_no" : $("#span_board_no").text(),
+                "comment_pageNumber" : $("#span_comment_pageNumber").text()
+        }
+        var url =  "${ path }/board_servlet/commentList.do";
+        
+        $.ajax({
+            type: "post",
+            data: param,
+            url: url,
+            success: function(data) {
+                $("#commentResult").html(data);
+            }
+        });
+    }
+    </script>
     </c:otherwise>
 </c:choose>
-
-<script>
-$(document).ready(function() {
-    var content = $("#content").text().replace(/(?:\r\n|\r|\n)/g, '<br>');
-    $("#content").html(content);
-});
-</script>
