@@ -48,7 +48,7 @@ function GoBoardPage(value1, value2) {
         }
     } else if (value1 == "list") {
         var param = {
-                "board_tbl" : $("#span_tbl").text(),
+                "board_tbl" : $("#span_board_tbl").text(),
                 "pageNumber" : $("#span_pageNumber").text(),
                 "search_option" : $("#span_search_option").text(),
                 "search_data" : $("#span_search_data").text()

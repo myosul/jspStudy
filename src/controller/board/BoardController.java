@@ -63,10 +63,6 @@ public class BoardController extends HttpServlet {
         request.setAttribute("ip", ip);
         // -----------------
         
-        // board_tbl
-        String board_tbl = util.tblCheck(request.getParameter("tbl"), "freeboard");
-        request.setAttribute("board_tbl", board_tbl);
-        
         // board_no
         int board_no = util.toNumber(request.getParameter("board_no"));
         request.setAttribute("board_no", board_no);
@@ -103,6 +99,20 @@ public class BoardController extends HttpServlet {
         BoardDAO dao = new BoardDAO();
         BoardDTO dto = new BoardDTO();
         BoardCommentDTO cDto = new BoardCommentDTO();
+        
+        // board_tbl--------
+        String board_tbl = util.tblCheck(request.getParameter("board_tbl"), "freeboard");
+        String board_tbl_name = dao.selectBoardTypeName(board_tbl);
+        if (board_tbl_name.equals("")) {
+            out.println("<script>");
+            out.println("alert('없거나 사용이 중지된 게시판 이름입니다.');");
+            out.println("history.back();");
+            out.println("</script>");
+            return;
+        }
+        request.setAttribute("board_tbl", board_tbl);
+        request.setAttribute("board_tbl_name", board_tbl_name);
+        //------------------
         
         String page = "/main/main.jsp"; // 포워딩할 주소
         

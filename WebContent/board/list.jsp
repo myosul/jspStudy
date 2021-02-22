@@ -3,7 +3,7 @@
 <%@ include file="../include/inc_header.jsp" %>
 <table border="0">
     <tr>
-        <td><h2>게시글 목록</h2></td>
+        <td><h2>${ board_tbl_name } 목록</h2></td>
     </tr>
     <tr>
         <td>

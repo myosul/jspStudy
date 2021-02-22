@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import db.DbExample;
 import model.board.dto.BoardDTO;
 import model.board.dto.BoardCommentDTO;
+import model.board.dto.BoardTypeDTO;
 
 public class BoardDAO {
     
@@ -456,6 +457,30 @@ public class BoardDAO {
         } finally {
             getConnClose(rs, pstmt, conn);
         }
+        return result;
+    }
+    
+    public String selectBoardTypeName(String board_tbl) {
+        String result = "";
+        conn = getConn();
+        try {
+            String sql = "select board_type_name from board_type where board_type_use = 'T'";
+            sql += " and board_type = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, board_tbl);
+            
+            // System.out.println(sql);
+            
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                result = rs.getString(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            getConnClose(rs, pstmt, conn);
+        }
+        
         return result;
     }
 
