@@ -113,5 +113,38 @@ PRIMARY KEY(board_comment_no)
 
 CREATE SEQUENCE seq_board_comment start with 1 increment by 1 nomaxvalue nocache;
 
-SELECT * FROM BOARD_COMMENT;
 
+CREATE TABLE board_type (
+board_type_no NUMBER NOT NULL, 
+board_type varchar2(50) NOT NULL, 
+board_type_name varchar2(50) NOT NULL, 
+board_type_use varchar2(1) not null check (board_type_use in ('T', 'F')), 
+board_type_regi_date timestamp default current_timestamp,
+PRIMARY KEY(board_type_no)
+);
+
+CREATE SEQUENCE seq_board_type start with 1 increment by 1 nomaxvalue nocache;
+
+INSERT INTO BOARD_TYPE 
+VALUES (
+seq_board_type.nextval, 'freeboard', '자유게시판', 'T', current_timestamp
+);
+
+INSERT INTO BOARD_TYPE 
+VALUES (
+seq_board_type.nextval, 'funnyboard', '유머게시판', 'T', current_timestamp
+);
+
+INSERT INTO BOARD_TYPE 
+VALUES (
+seq_board_type.nextval, 'memberboard', '회원전용게시판', 'F', current_timestamp
+);
+
+INSERT INTO BOARD_TYPE 
+VALUES (
+seq_board_type.nextval, 'javaboard', '자바게시판', 'T', current_timestamp
+);
+
+COMMIT;
+
+SELECT * FROM BOARD_TYPE;
