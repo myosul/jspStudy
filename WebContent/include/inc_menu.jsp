@@ -43,7 +43,10 @@
             <a href="${ path }/board_servlet/index.do">게시판(ajax)</a>
         </td>
         <td style="padding: 0px 20px;">
-            <a href="#">쇼핑몰</a>
+            <a href="${ path }/product_servlet/index.do">Mall(상품관리-ajax)</a>
+        </td>
+        <td style="padding: 0px 20px;">
+            <a href="#">Mall(ajax)</a>
         </td>
         <td style="padding: 0px 20px;">
             <a href="#">관리자</a>

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../include/inc_header.jsp" %>
-<table border="0" align="center" style="width: 95%;">
+<table border="0" style="width: 95%;">
     <tr>
         <td style="padding: 0 0 20 0;">
             이름 : <input type="text" name="board_comment_writer" id="board_comment_writer" value="${ cookName }">
@@ -23,7 +23,7 @@
     </c:forEach>
     <tr>
         <td>
-            <table align="center">
+            <table>
                 <tr>
                     <td>
                         <c:if test="${ startPage > blockSize }">

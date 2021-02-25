@@ -14,7 +14,7 @@ board_passwd : <span id="span_board_passwd"></span><br>
 
 <input type="text" name="a" style="display: ;"><br><!-- ajax 테스트용 -->
 
-<div id="result" style="border: 0px solid red; height: 500px;"></div>
+<div id="result" style="border: 0px solid red; position: relative;"></div>
 
 <script>
 $(document).ready(function() {
@@ -48,7 +48,7 @@ function GoBoardPage(value1, value2) {
         }
     } else if (value1 == "list") {
         var param = {
-                "board_tbl" : $("#span_tbl").text(),
+                "board_tbl" : $("#span_board_tbl").text(),
                 "pageNumber" : $("#span_pageNumber").text(),
                 "search_option" : $("#span_search_option").text(),
                 "search_data" : $("#span_search_data").text()
