@@ -147,4 +147,24 @@ seq_board_type.nextval, 'javaboard', '자바게시판', 'T', current_timestamp
 
 COMMIT;
 
-SELECT * FROM BOARD_TYPE;
+CREATE TABLE product (
+product_no NUMBER NOT NULL,
+product_name varchar2(50) NOT NULL,
+product_price NUMBER DEFAULT 0,
+product_description clob,
+product_img varchar2(1000) NOT NULL,
+product_regi_date timestamp default current_timestamp,
+PRIMARY KEY(product_no)
+);
+
+CREATE SEQUENCE seq_product start with 1 increment by 1 nomaxvalue nocache;
+
+
+
+
+
+SELECT * FROM product;
+
+TRUNCATE TABLE product;
+
+COMMIT;
