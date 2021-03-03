@@ -42,11 +42,11 @@
         <td id="board" style="padding: 0px 20px;">
             <a href="${ path }/board_servlet/index.do">게시판(ajax)</a>
         </td>
-        <td style="padding: 0px 20px;">
+        <td id="product" style="padding: 0px 20px;">
             <a href="${ path }/product_servlet/index.do">Mall(상품관리-ajax)</a>
         </td>
-        <td style="padding: 0px 20px;">
-            <a href="#">Mall(ajax)</a>
+        <td id="mall" style="padding: 0px 20px;">
+            <a href="${ path }/mall_servlet/index.do">Mall(ajax)</a>
         </td>
         <td style="padding: 0px 20px;">
             <a href="#">관리자</a>
@@ -87,6 +87,16 @@
     <c:when test="${ menu == 'board' }">
         <script>
         $("#board").css("background-color", "silver");
+        </script>
+    </c:when>
+    <c:when test="${ menu == 'product' }">
+        <script>
+        $("#product").css("background-color", "silver");
+        </script>
+    </c:when>
+    <c:when test="${ menu == 'mall' }">
+        <script>
+        $("#mall").css("background-color", "silver");
         </script>
     </c:when>
 </c:choose>

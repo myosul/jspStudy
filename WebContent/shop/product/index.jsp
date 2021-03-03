@@ -15,15 +15,15 @@ search_data : <span id="span_search_data">${ search_data }</span><br>
 <script>
 $(document).ready(function() {
     <c:if test="${ menu_gubun == 'product_index'}">
-    // select_proc('list', '1', '');
-    select_proc('add', '1', '');
+    select_proc('list', '1', '');
+    // select_proc('add', '1', '');
     </c:if>
 });
 
 function select_proc(value1, value2, value3) {
     if (value1 == "add" || value1 == "list") {
         $("#span_product_no").text("");
-    } else if (value1 == "addProc") {
+    } else if (value1 == "addProc" || value1 == "deleteProc") {
         $("#span_product_no").text("");
     }
     
@@ -48,12 +48,13 @@ function GoProductPage(value1) {
     
     if (value1 == "add") {
         param = {}
-    } else if (value1 == "addProc" || value1 == "modifyProc" || value1 == "deleteProc") {
+    } else if (value1 == "addProc" || value1 == "modifyProc") {
         process_data = false;
         content_type = false;
         
         param = new FormData();
         
+        param.append("product_no", $("#product_no").val());
         param.append("product_name", $("#product_name").val());
         param.append("product_price", $("#product_price").val());
         param.append("product_description", $("#product_description").val());
@@ -73,7 +74,7 @@ function GoProductPage(value1) {
                 "search_option" : $("#span_search_option").text(),
                 "search_data" : $("#span_search_data").text()
         }
-    } else if (value1 == "view") {
+    } else if (value1 == "view" || value1 == "modify" || value1 == "deleteProc") {
         param = {
                 "product_no" : $("#span_product_no").text(),
                 "pageNumber" : $("#span_pageNumber").text(),

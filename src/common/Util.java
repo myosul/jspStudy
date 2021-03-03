@@ -2,7 +2,10 @@ package common;
 
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -257,6 +260,35 @@ public class Util {
             result = "";
         }
         result = result.trim();
+        return result;
+    }
+    
+    public String create_uuid() {
+        return UUID.randomUUID().toString(); // java.util
+    }
+    
+    public String getDateTimeType() {
+        /*
+        Date now = new Date();
+        SimpleDateFormat sf;
+        sf = new SimpleDateFormat("yyyyMMddHHmmss");
+        return sf.format(now);
+        */
+        
+        String result = "";
+        int[] a = getDateTime();
+        String y = a[0] + "";
+        String m = a[1] + "";
+        String d = a[2] + "";
+        String s = a[3] + "";
+        String b = a[4] + "";
+        String c = a[5] + "";
+        if (m.length() < 2) { m = "0" + m; }
+        if (d.length() < 2) { d = "0" + d; }
+        if (s.length() < 2) { s = "0" + s; }
+        if (b.length() < 2) { b = "0" + b; }
+        if (c.length() < 2) { c = "0" + c; }
+        result = y + m + d + s + b + c;
         return result;
     }
 

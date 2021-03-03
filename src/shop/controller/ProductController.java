@@ -1,5 +1,6 @@
 package shop.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.Normalizer;
@@ -19,7 +20,6 @@ import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import shop.common.UtilProduct;
-import shop.common.Constants;
 import shop.model.dao.ProductDAO;
 import shop.model.dto.ProductDTO;
 
@@ -41,7 +41,7 @@ public class ProductController extends HttpServlet {
         response.setContentType("text/html; charset=utf-8");
         PrintWriter out = response.getWriter();
         
-        String temp; // 공용 임시변수
+        String temp = ""; // 공용 임시변수
         
         UtilProduct util = new UtilProduct();
         
@@ -122,9 +122,14 @@ public class ProductController extends HttpServlet {
             RequestDispatcher rd = request.getRequestDispatcher(page);
             rd.forward(request, response);
             
-        } else if (url.indexOf("addProc.do") != -1) {
+        } else if (url.indexOf("addProc.do") != -1 || url.indexOf("modifyProc.do") != -1) {
             
             String img_path01 = request.getSession().getServletContext().getRealPath("/attach/product_img/");
+            java.io.File isDir = new java.io.File(img_path01);
+            if (!isDir.isDirectory()) {
+                System.out.println("디렉토리가 존재하지 않습니다. 디렉토리를 생성합니다.");
+                isDir.mkdir();
+            }
             String img_path02 = img_path01.replace("\\", "/");
             String img_path03 = img_path01.replace("\\", "\\\\");
             int max_size = 10 * 1024 * 1024; // 10M, 업로드 최대용량
@@ -133,24 +138,20 @@ public class ProductController extends HttpServlet {
             // System.out.println("img_path02 : " + img_path02);
             // System.out.println("img_path03 : " + img_path03);
             
-            MultipartRequest multi = new MultipartRequest(request, img_path03, max_size, "utf-8", new DefaultFileRenamePolicy());
+            MultipartRequest multi = new MultipartRequest(request, img_path03, max_size, "utf-8", new DefaultFileRenamePolicy()); // 서버에 저장된다.
             
-            
-            String product_name = util.toEntityCode(multi.getParameter("product_name"));
-            int product_price = util.toNumber(multi.getParameter("product_price"));
-            String product_description = util.toEntityCode(multi.getParameter("product_description"));
-            
-            // System.out.println("product_name : " + product_name);
-            // System.out.println("product_price : " + product_price);
-            // System.out.println("product_description : " + product_description);
-            
-            String[] array = new String[3];
+            int arrayCounter = 3;
+            String[] array = new String[arrayCounter];
+            for (int i=0; i<array.length; i++) {
+                array[i] = "-";
+            }
             
             Enumeration files = multi.getFileNames();
-            while (files.hasMoreElements()) {
-                String formName = (String)files.nextElement();
-                String filename = multi.getFilesystemName(formName);
+            while (files.hasMoreElements()) { // 다음 요소가 있으면
+                String formName = (String)files.nextElement(); // 폼 이름
+                String filename = multi.getFilesystemName(formName); // 파일 이름
                 filename = Normalizer.normalize(filename, Normalizer.Form.NFC); // 완성형으로 바꾸어준다. (mac 크롬에서 업로드시 한글 자소분리(조합형으로 업로드 되는 현상) 해결)
+                String fileType = multi.getContentType(formName); // 파일 타입
                 
                 // String fileOrgName = multi.getOriginalFileName(formName);
                 // String fileType = multi.getContentType(formName);
@@ -159,40 +160,130 @@ public class ProductController extends HttpServlet {
                 // System.out.println("filename : " + filename); // 파일이름
                 // System.out.println(formName + " : " + filename + " : " + fileOrgName + " : " + fileType);
                 
-                if (formName.equals("0")) {
-                    array[0] = filename;
-                } else if (formName.equals("1")) {
-                    array[1] = filename;
-                } else if (formName.equals("2")) {
-                    array[2] = filename;
+                if (filename == null || filename.trim().equals("")) {
+                    filename = "-";
                 }
+                
+                int k = Integer.parseInt(formName);
+                array[k] = filename;
             }
             
-            temp = "";
             for (int i=0; i<array.length; i++) {
-                String imsi = array[i];
-                if (imsi == null) {
-                    imsi = "-";
+                temp = array[i];
+                if (temp.equals("-")) {
+                    continue;
                 }
-                temp += "," + imsi;
+                String old_path = img_path03 + temp; // 원본이 업로드된 절대경로와 파일명을 구한다
+                java.io.File f1 = new java.io.File(old_path);
+                if (!f1.exists()) {
+                    array[i] = "-"; // 실제 파일이 없으면 배열내 값을 비운다.
+                    continue;
+                }
+                
+                String ext = "";
+                int point_index = temp.lastIndexOf(".");
+                if (point_index == -1) { // . 이 없으면..
+                    f1.delete();
+                    array[i] = "-";
+                    continue;
+                }
+                ext = temp.substring(point_index + 1).toLowerCase();
+                if (!(ext.equals("jpg") || ext.equals("jpeg") || ext.equals("gif") || ext.equals("png"))) {
+                    f1.delete();
+                    array[i] = "-";
+                    continue;
+                }
+                
+                String uuid = util.create_uuid();
+                String newFilename = util.getDateTimeType() + "-" + uuid + "." + ext;
+                java.io.File newFile = new java.io.File(img_path03 + newFilename);
+                f1.renameTo(newFile); // 파일 이동
+                array[i] = array[i] + "|" + newFilename;
             }
-            System.out.println(temp);
-            temp = temp.substring(1);
-            System.out.println(temp);
-
+            
+            String str = "";
+            for (int i=0; i<array.length; i++) {
+                str += "," + array[i];
+            }
+            str = str.substring(1);
+            // System.out.println(str);
+            
+            product_no = util.toNumber(multi.getParameter("product_no"));
+            String product_name = util.toEntityCode(multi.getParameter("product_name"));
+            int product_price = util.toNumber(multi.getParameter("product_price"));
+            String product_description = util.toEntityCode(multi.getParameter("product_description"));
+            
+            // System.out.println("product_name : " + product_name);
+            // System.out.println("product_price : " + product_price);
+            // System.out.println("product_description : " + product_description);
+            
+            dto.setProduct_no(product_no);
             dto.setProduct_name(product_name);
             dto.setProduct_price(product_price);
             dto.setProduct_description(product_description);
-            dto.setProduct_img(temp);
             
-            int result = dao.setInsert(dto);
+            // System.out.println(dto.toString());
+            
+            int result = 0;
+            if (url.indexOf("addProc.do") != -1) {
+                request.setAttribute("menu_gubun", "product_addProc");
+                dto.setProduct_img(str);
+                
+                // System.out.println(dto.toString());
+                result = dao.setInsert(dto);
+            } else if (url.indexOf("modifyProc.do") != -1) {
+                
+                request.setAttribute("menu_gubun", "product_modifyProc");
+                
+                ProductDTO dto2 = dao.getSelect(product_no);
+                // System.out.println(dto2.toString());
+                String db_product_img = dto2.getProduct_img(); // DB의 product_img 가져오기
+                // System.out.println(db_product_img);
+                String deleteFileName = "";
+                if (str.trim().equals("-,-,-")) {
+                    dto.setProduct_img(db_product_img);
+                } else { // 첨부파일이 있을 경우, 순서 고민, 반복문
+                    temp = "";
+                    String[] dbArray = db_product_img.split(",");
+                    for (int i=0; i<array.length; i++) {
+                        if (array[i].equals("-")) {
+                            temp += "," + dbArray[i];
+                        } else {
+                            temp += "," + array[i];
+                            deleteFileName += "," + dbArray[i].substring(dbArray[i].lastIndexOf("|") + 1);
+                        }
+                    }
+                }
+                // System.out.println(deleteFileName);
+                if (deleteFileName != null && !deleteFileName.equals("")) {
+                    deleteFileName = deleteFileName.substring(1);
+                }
+                // System.out.println(deleteFileName);
+                temp = temp.substring(1);
+                // System.out.println(temp);
+                dto.setProduct_img(temp);
+                
+                // System.out.println(dto.toString());
+                result = dao.setUpdate(dto);
+                
+                String[] arrayDelete = deleteFileName.split(",");
+                for (int i=0; i<arrayDelete.length; i++) {
+                    if (!arrayDelete[i].trim().equals("-")) {
+                        java.io.File f1 = new java.io.File(img_path03 + arrayDelete[i]);
+                        f1.delete();
+                    }
+                }
+            }
             
             if (result > 0) { // 성공
-                System.out.println("-- 상품 등록 성공 --");
-            } else { // 실패
-                System.out.println("-- 상품 등록 실패 --");
+                System.out.println("-- 성공 --");
                 out.println("<script>");
-                out.println("alert('등록하지 못했습니다.');");
+                out.println("select_proc('list', '1', '');");
+                out.println("</script>");
+            } else { // 실패
+                System.out.println("-- 실패 --");
+                out.println("<script>");
+                out.println("alert('처리하지 못했습니다.');");
                 out.println("select_proc('list', '1', '');");
                 out.println("</script>");
             }
@@ -243,7 +334,7 @@ public class ProductController extends HttpServlet {
             RequestDispatcher rd = request.getRequestDispatcher(page);
             rd.forward(request, response);
             
-        } /* else if (url.indexOf("view.do") != -1) {
+        } else if (url.indexOf("view.do") != -1) {
             
             dto = dao.getSelect(product_no);
             
@@ -256,8 +347,87 @@ public class ProductController extends HttpServlet {
             page = "/shop/product/view.jsp";
             RequestDispatcher rd = request.getRequestDispatcher(page);
             rd.forward(request, response);
-        } */
-	    
+            
+        } else if (url.indexOf("modify.do") != -1) {
+            
+            dto = dao.getSelect(product_no);
+            
+            // String product_description = dto.getProduct_description().replace("\n", "<br>");
+            // dto.setProduct_description(product_description);
+            
+            request.setAttribute("menu_gubun", "product_modify");
+            request.setAttribute("dto", dto);
+            
+            page = "/shop/product/modify.jsp";
+            RequestDispatcher rd = request.getRequestDispatcher(page);
+            rd.forward(request, response);
+            
+        } else if (url.indexOf("deleteProc.do") != -1) {
+            
+            dto.setProduct_no(product_no);
+            
+            // System.out.println(dto.toString());
+            
+            request.setAttribute("menu_gubun", "product_modifyProc");
+            
+            String img_path01 = request.getSession().getServletContext().getRealPath("/attach/product_img/");
+            java.io.File isDir = new java.io.File(img_path01);
+            if (!isDir.isDirectory()) {
+                System.out.println("디렉토리가 존재하지 않습니다. 디렉토리를 생성합니다.");
+                isDir.mkdir();
+            }
+            String img_path02 = img_path01.replace("\\", "/");
+            String img_path03 = img_path01.replace("\\", "\\\\");
+            
+            // System.out.println("img_path01 : " + img_path01);
+            // System.out.println("img_path02 : " + img_path02);
+            // System.out.println("img_path03 : " + img_path03);
+            
+            ProductDTO dto2 = dao.getSelect(product_no);
+            String db_product_img = dto2.getProduct_img(); // DB의 product_img 가져오기
+            String deleteFileName = "";
+            
+            String[] dbArray = db_product_img.split(",");
+            for (int i=0; i<dbArray.length; i++) {
+                if (dbArray[i].equals("-")) {
+                    
+                } else {
+                    deleteFileName += "," + dbArray[i].substring(dbArray[i].lastIndexOf("|") + 1);
+                }
+            }
+            
+            // System.out.println(deleteFileName);
+            if (deleteFileName != null && !deleteFileName.equals("")) {
+                deleteFileName = deleteFileName.substring(1);
+            }
+            System.out.println(deleteFileName);
+            
+            int result = dao.setDelete(dto);
+            
+            String[] arrayDelete = deleteFileName.split(",");
+            for (int i=0; i<arrayDelete.length; i++) {
+                if (!arrayDelete[i].trim().equals("-")) {
+                    java.io.File f1 = new java.io.File(img_path03 + arrayDelete[i]);
+                    f1.delete();
+                }
+            }
+            
+            
+            if (result > 0) { // 성공
+                System.out.println("-- 삭제 성공 --");
+                out.println("<script>");
+                out.println("select_proc('list', '1', '');");
+                out.println("</script>");
+            } else { // 실패
+                System.out.println("-- 삭제 실패 --");
+                out.println("<script>");
+                out.println("alert('처리하지 못했습니다.');");
+                out.println("select_proc('view', '', '" + product_no + "');");
+                out.println("</script>");
+            }
+            
+        }
+        
     }
 
 }

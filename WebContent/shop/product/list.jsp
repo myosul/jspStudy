@@ -66,13 +66,15 @@
                     <td>${ recordNum }</td>
                     <td>
                         <c:choose>
-                            <c:when test="${ fn:split(dto.product_img, ',')[0] == '-' }">
+                            <c:when test="${ row.product_img == '-,-,-' }">
                                 <a href="#" onclick="select_proc('view', '','${ dto.product_no }')">이미지X</a>
                             </c:when>
                             <c:otherwise>
                                 <c:set var="temp1" value="${ fn:split(dto.product_img, ',')[0] }"></c:set>
+                                <c:set var="temp2" value="${ fn:split(temp1, '|')[0] }"></c:set>
+                                <c:set var="temp3" value="${ fn:split(temp1, '|')[1] }"></c:set>
                                 <a href="#" onclick="select_proc('view', '', '${ dto.product_no }')">
-                                    <img src="${ path }/attach/product_img/${ temp1 }" alt="${ dto.product_name }" title="${ dto.product_name }" style="width: 50px; height: 50px;">
+                                    <img src="${ path }/attach/product_img/${ temp3 }" alt="${ dto.product_name }" title="${ dto.product_name }" style="width: 50px; height: 50px;">
                                 </a>
                             </c:otherwise>
                         </c:choose>

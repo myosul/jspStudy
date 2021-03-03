@@ -159,9 +159,9 @@ public class ProductDAO {
             sql += "(";
             sql += "select p.*";
             sql += ", LAG(product_no) Over (order by product_no desc) product_pre_no";
-            sql += ", LAG(product_name) Over (order by product_no desc) product_pre_subject";
+            sql += ", LAG(product_name) Over (order by product_no desc) product_pre_name";
             sql += ", LEAD(product_no) Over (order by product_no desc) product_nxt_no";
-            sql += ", LEAD(product_name) Over (order by product_no desc) product_nxt_subject";
+            sql += ", LEAD(product_name) Over (order by product_no desc) product_nxt_name";
             sql += " from product p order by product_no desc";
             sql += ") WHERE product_no = ?";
             
@@ -190,6 +190,44 @@ public class ProductDAO {
             getConnClose(rs, pstmt, conn);
         }
         return dto;
+    }
+    
+    public int setUpdate(ProductDTO dto) {
+        int result = 0;
+        getConn();
+        try {
+            String sql = "";
+            sql += "update product set product_name = ?, product_price = ?, product_description = ?, product_img = ? where product_no = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, dto.getProduct_name());
+            pstmt.setInt(2, dto.getProduct_price());
+            pstmt.setString(3, dto.getProduct_description());
+            pstmt.setString(4, dto.getProduct_img());
+            pstmt.setInt(5, dto.getProduct_no());
+            result = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            getConnClose(rs, pstmt, conn);
+        }
+        return result;
+    }
+    
+    public int setDelete(ProductDTO dto) {
+        int result = 0;
+        getConn();
+        try {
+            String sql = "";
+            sql += "delete from product where product_no = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, dto.getProduct_no());
+            result = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            getConnClose(rs, pstmt, conn);
+        }
+        return result;
     }
 
 }

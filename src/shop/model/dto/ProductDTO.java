@@ -110,6 +110,15 @@ public class ProductDTO {
     public void setProduct_nxt_name(String product_nxt_name) {
         this.product_nxt_name = product_nxt_name;
     }
+
+    @Override
+    public String toString() {
+        return "ProductDTO [product_no=" + product_no + ", product_name=" + product_name + ", product_price="
+                + product_price + ", product_description=" + product_description + ", product_img=" + product_img
+                + ", product_regi_date=" + product_regi_date + ", product_buy_counter=" + product_buy_counter
+                + ", product_pre_no=" + product_pre_no + ", product_pre_name=" + product_pre_name + ", product_nxt_no="
+                + product_nxt_no + ", product_nxt_name=" + product_nxt_name + "]";
+    }
     
     
 

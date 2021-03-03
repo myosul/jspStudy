@@ -160,8 +160,23 @@ PRIMARY KEY(product_no)
 CREATE SEQUENCE seq_product start with 1 increment by 1 nomaxvalue nocache;
 
 
+CREATE TABLE cart (
+cart_no NUMBER NOT NULL PRIMARY KEY, -- 일련코드
+member_no NUMBER NOT NULL, -- 사용자코드
+product_no NUMBER NOT NULL, -- 상품코드
+cart_amount NUMBER DEFAULT 0, -- 수량
+cart_regi_date timestamp DEFAULT current_timestamp
+);
 
+CREATE SEQUENCE seq_cart start with 1 increment by 1 nomaxvalue nocache;
 
+ALTER TABLE cart ADD constraint fk_cart_member_no
+FOREIGN key(member_no) REFERENCES member(member_no);
+
+ALTER TABLE cart ADD constraint fk_cart_product_no
+FOREIGN key(product_no) REFERENCES product(product_no);
+
+-- alter table cart drop constraint fk_cart_member_no;
 
 SELECT * FROM product;
 
