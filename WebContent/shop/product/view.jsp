@@ -16,8 +16,8 @@
         <td>상품사진 : </td>
         <td>
             <c:choose>
-                <c:when test="${ row.product_img == '-,-,-' }">
-                    <a href="#" onclick="select_proc('view', '','${ dto.product_no }')">이미지X</a>
+                <c:when test="${ fn:split(dto.product_img, ',')[0] == '-' }">
+                    이미지X
                 </c:when>
                 <c:otherwise>
                     <c:set var="temp1" value="${ fn:split(dto.product_img, ',')[0] }"></c:set>

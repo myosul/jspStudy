@@ -66,7 +66,7 @@
                     <td>${ recordNum }</td>
                     <td>
                         <c:choose>
-                            <c:when test="${ row.product_img == '-,-,-' }">
+                            <c:when test="${ fn:split(dto.product_img, ',')[0] == '-' }">
                                 <a href="#" onclick="select_proc('view', '','${ dto.product_no }')">이미지X</a>
                             </c:when>
                             <c:otherwise>
