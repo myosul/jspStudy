@@ -164,7 +164,7 @@ CREATE TABLE cart (
 cart_no NUMBER NOT NULL PRIMARY KEY, -- 일련코드
 member_no NUMBER NOT NULL, -- 사용자코드
 product_no NUMBER NOT NULL, -- 상품코드
-cart_amount NUMBER DEFAULT 0, -- 수량
+product_amount NUMBER DEFAULT 0, -- 수량
 cart_regi_date timestamp DEFAULT current_timestamp
 );
 
@@ -183,3 +183,10 @@ SELECT * FROM product;
 TRUNCATE TABLE product;
 
 COMMIT;
+
+
+select c.*, p.PRODUCT_NAME , p.PRODUCT_PRICE , p.PRODUCT_IMG, (c.product_amount * p.PRODUCT_PRICE) cart_buy_money 
+from cart c, product p
+where c.product_no = p.product_no
+AND member_no = 1
+order by cart_regi_date DESC;

@@ -157,13 +157,13 @@ function search() {
     if (confirm('검색 OK?')) {
         $("#span_search_option").text($("#search_option").val());
         $("#span_search_data").text($("#search_data").val());
-        select_page('1');
+        select_proc('list', '1', '');
     }
 }
 
 function select_all() {
     $("#span_search_option").text("");
     $("#span_search_data").text("");
-    select_page('1');
+    select_proc('list', '1', '');
 }
 </script>

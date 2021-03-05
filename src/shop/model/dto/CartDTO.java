@@ -8,7 +8,7 @@ public class CartDTO {
     private int cart_no;
     private int member_no;
     private int product_no;
-    private int amount;
+    private int product_amount;
     private Timestamp cart_regi_date;
     
     private String product_name;
@@ -48,12 +48,12 @@ public class CartDTO {
         this.product_no = product_no;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getProduct_amount() {
+        return product_amount;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setProduct_amount(int product_amount) {
+        this.product_amount = product_amount;
     }
 
     public Timestamp getCart_regi_date() {
@@ -103,6 +103,16 @@ public class CartDTO {
     public void setCart_buy_money(int cart_buy_money) {
         this.cart_buy_money = cart_buy_money;
     }
+
+
+    @Override
+    public String toString() {
+        return "CartDTO [cart_no=" + cart_no + ", member_no=" + member_no + ", product_no=" + product_no
+                + ", product_amount=" + product_amount + ", cart_regi_date=" + cart_regi_date + ", product_name="
+                + product_name + ", product_price=" + product_price + ", product_description=" + product_description
+                + ", product_img=" + product_img + ", cart_buy_money=" + cart_buy_money + "]";
+    }
+    
     
 
 }
