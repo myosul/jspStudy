@@ -30,7 +30,7 @@
         <tr>
             <td colspan="2">
                 <h1>글상세보기</h1>
-                <input type="text" name="no" value="${ sto.board_no }">
+                <input type="text" name="board_no" value="${ dto.board_no }">
             </td>
         </tr>
         <tr>
