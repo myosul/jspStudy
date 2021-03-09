@@ -36,7 +36,7 @@
         <td id="survey" style="padding: 0px 20px;">
             <a href="${ path }/survey_servlet/index.do">설문조사(ajax)</a>
         </td>
-        <td id="survey" style="padding: 0px 20px;">
+        <td id="survey1" style="padding: 0px 20px;">
             <a href="${ path }/survey1_servlet/list.do">설문조사</a>
         </td>
         <td id="board" style="padding: 0px 20px;">
@@ -47,6 +47,12 @@
         </td>
         <td id="mall" style="padding: 0px 20px;">
             <a href="${ path }/mall_servlet/index.do">Mall(ajax)</a>
+        </td>
+        <td id="chart" style="padding: 0px 20px;">
+            <a href="${ path }/chart_servlet/index.do">Chart(ajax)</a>
+        </td>
+        <td id="email" style="padding: 0px 20px;">
+            <a href="${ path }/email_servlet/index.do">Email</a>
         </td>
         <td style="padding: 0px 20px;">
             <a href="#">관리자</a>
@@ -84,6 +90,11 @@
         $("#survey").css("background-color", "silver");
         </script>
     </c:when>
+    <c:when test="${ menu == 'survey1' }">
+        <script>
+        $("#survey1").css("background-color", "silver");
+        </script>
+    </c:when>
     <c:when test="${ menu == 'board' }">
         <script>
         $("#board").css("background-color", "silver");
@@ -97,6 +108,16 @@
     <c:when test="${ menu == 'mall' }">
         <script>
         $("#mall").css("background-color", "silver");
+        </script>
+    </c:when>
+    <c:when test="${ menu == 'chart' }">
+        <script>
+        $("#chart").css("background-color", "silver");
+        </script>
+    </c:when>
+    <c:when test="${ menu == 'email' }">
+        <script>
+        $("#email").css("background-color", "silver");
         </script>
     </c:when>
 </c:choose>

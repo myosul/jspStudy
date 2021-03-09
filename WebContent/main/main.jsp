@@ -81,6 +81,12 @@
                     <c:when test="${ menu_gubun == 'mall_index' }">
                         <jsp:include page="../shop/mall/index.jsp"></jsp:include>
                     </c:when>
+                    <c:when test="${ menu_gubun == 'chart_index' }">
+                        <jsp:include page="../chart/index.jsp"></jsp:include>
+                    </c:when>
+                    <c:when test="${ menu_gubun == 'email_index' }">
+                        <jsp:include page="../email/index.jsp"></jsp:include>
+                    </c:when>
                     <c:otherwise>
                         <jsp:include page="../main/main_sub.jsp"></jsp:include>
                     </c:otherwise>

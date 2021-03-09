@@ -151,5 +151,32 @@ public class CartDAO {
         }
         return result;
     }
+    
+    public ArrayList<CartDTO> getListCartProductGroup() {
+        ArrayList<CartDTO> list = new ArrayList<>();
+        getConn();
+        try {
+            String sql = "";
+            sql += "select p.product_name product_name, sum(c.product_amount * p.product_price) cart_buy_money";
+            sql += " from cart c inner join product p on c.product_no = p.product_no";
+            sql += " group by p.product_name";
+            sql += " order by product_name asc";
+            
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                CartDTO dto = new CartDTO();
+                dto.setProduct_name(rs.getString("product_name"));
+                dto.setCart_buy_money(rs.getInt("cart_buy_money"));
+                // System.out.println(dto.toString());
+                list.add(dto);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            getConnClose(rs, pstmt, conn);
+        }
+        return list;
+    }
 
 }

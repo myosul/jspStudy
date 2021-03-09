@@ -176,11 +176,17 @@ FOREIGN key(member_no) REFERENCES member(member_no);
 ALTER TABLE cart ADD constraint fk_cart_product_no
 FOREIGN key(product_no) REFERENCES product(product_no);
 
+-- ALTER TABLE cart DROP CONSTRAINT fk_cart_product_no;
+
 -- alter table cart drop constraint fk_cart_member_no;
 
 SELECT * FROM product;
 
 TRUNCATE TABLE product;
+
+SELECT * FROM cart;
+
+TRUNCATE TABLE cart;
 
 COMMIT;
 
