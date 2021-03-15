@@ -32,7 +32,7 @@
                 <c:set var="totalPrice" value="0"></c:set>
                 <c:set var="i" value="1"></c:set>
                 <c:forEach var="dto" items="${ list }">
-                <span id="b_${ dto.cart_no }" style="display: none;">${ dto.member_no }, ${ dto.product_no }, ${ dto.product_amount }</span>
+                <span id="b_${ dto.cart_no }" style="display: ;">${ dto.member_no }, ${ dto.product_no }, ${ dto.product_amount }</span>
                 <tr>
                     <td align="center">
                         <input type="checkbox" name="chk" id="chk" value="${ dto.cart_no }">${ dto.cart_no }

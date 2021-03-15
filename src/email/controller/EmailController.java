@@ -27,14 +27,12 @@ public class EmailController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doProc(request, response);
     }
-    
+
     protected void doProc(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
         PrintWriter out = response.getWriter();
-        
-        String temp = ""; // 공용 임시변수
         
         Util util = new Util();
         

@@ -1,4 +1,3 @@
--- 스키마 생성
 create user jspStudy identified by 1234
 default tablespace users
 temporary tablespace temp;

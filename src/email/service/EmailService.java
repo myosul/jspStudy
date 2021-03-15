@@ -24,23 +24,25 @@ public class EmailService {
         String subject = dto.getSubject();
         String content = dto.getContent();
         
-        Properties props = System.getProperties();
+        Properties props = System.getProperties(); //import java.util.Properties;
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.port", port);
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
         
-        Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
-            String un = username;
-            String pw = password;
-            
-            protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
-                return new javax.mail.PasswordAuthentication(un, pw);
+        Session session = Session.getDefaultInstance(props, 
+                new javax.mail.Authenticator() {
+                    String un = username;
+                    String pw = password;
+                    
+                    protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+                        return new javax.mail.PasswordAuthentication(un, pw);
+                    }
             }
-        });
+        );
         session.setDebug(true); // for debug
         Message mimeMessage = new MimeMessage(session); // MimeMessage 생성
-        
         mimeMessage.addFrom(new InternetAddress[] {
                 new InternetAddress(fromEmail, fromName)
         });
